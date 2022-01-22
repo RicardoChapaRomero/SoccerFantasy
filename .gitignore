@@ -1,11 +1,13 @@
 # Server
 /node_modules
+package-lock.json
 
 # Client 
 # dependencies
 client/node_modules
 client/.pnp
 client/.pnp.js
+client/package-lock.json
 
 # testing
 client/coverage

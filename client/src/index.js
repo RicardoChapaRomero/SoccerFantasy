@@ -2,11 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import LoginPage from './components/login/LoginPage';
+import StartPage from './components/start/StartPage';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './theme';
 
 ReactDOM.render(
   <React.StrictMode>
-    <LoginPage />
+    <ThemeProvider theme={theme}>
+      <StartPage />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,0 +1,48 @@
+.form {
+  display: flex;
+  float: right;
+  width: 40vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.login {
+  background-color: var(--beige);
+  width: 70%;
+  height: 80%;
+  border-radius: 25px;
+  box-shadow: 10px 10px #122c12;
+}
+
+.footer {
+  display: block;
+  color: var(--white);
+  text-align: center;
+  margin-top: 20px;
+}
+
+.a {
+  font-weight: bold;
+}
+
+.a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.login h2 {
+  color: var(--primaryGreen);
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .form {
+    width: 100vw;
+  }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .form {
+    width: 50vw;
+  }
+}

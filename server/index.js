@@ -10,8 +10,15 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // Routes
+// Test Route
 app.get("/api", (req, res) => {
+  console.log('here');
   res.json({ message: "Hello from server!" });
+});
+
+app.get("/login", (req, res) => {
+  console.log(req.query);
+  res.json({ message: "User logged in" });
 });
 
 // All other GET requests not handled before will return our React app

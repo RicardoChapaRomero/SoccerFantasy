@@ -9,9 +9,15 @@ import InputAdornment from '@mui/material/InputAdornment';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Lock from '@mui/icons-material/Lock';
 import { validateEmail } from '../../utils';
+import { GoogleLogin } from 'react-google-login';
+import {
+  googleAuthOnSuccess,
+  googleAuthOnFailure,
+  loginAuth
+} from '../../scripts/apiScripts';
 
 function LoginForm(props) {
-  const { email, password, onChange, onSubmit } = props;
+  const { email, password, onChange } = props;
   const [values, setValues] = useState({
     email: email,
     password: password,
@@ -34,6 +40,10 @@ function LoginForm(props) {
             : 'Invalid email'
       });
     }
+  };
+
+  const handleLogin = () => {
+    loginAuth(values.email, values.password);
   };
 
   return (
@@ -99,9 +109,18 @@ function LoginForm(props) {
             height: '20%'
           }}
         >
-          <Button success onClick={onSubmit} variant="contained">
+          <Button onClick={handleLogin} variant="contained">
             login
           </Button>
+
+          <GoogleLogin
+            clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+            buttonText="Login with Google"
+            onSuccess={googleAuthOnSuccess}
+            onFailure={googleAuthOnFailure}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={false}
+          />
         </Stack>
       </div>
       <div className="footer">
@@ -116,13 +135,11 @@ function LoginForm(props) {
 LoginForm.propTypes = {
   email: PropTypes.string,
   password: PropTypes.string,
-  onChange: PropTypes.func,
-  onSubmit: PropTypes.func
+  onChange: PropTypes.func
 };
 LoginForm.defaultProps = {
   email: '',
   password: '',
-  onChange: () => console.log('onchange'),
-  onSubmit: () => console.log('onsubmit')
+  onChange: () => console.log('onchange')
 };
 export default LoginForm;

@@ -53,7 +53,6 @@ export function formAuth(email, password) {
 // Register Form Handler
 export function formRegister(email, password, team, name) {
   const userData = {
-    method: 'form',
     email: email,
     password: password,
     name: name,

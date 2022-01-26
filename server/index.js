@@ -17,7 +17,7 @@ app.get("/api", (req, res) => {
 });
 
 /** Login Route
- *  req:
+ *  req.query:
  * {
  *  method: 'form' / 'google'
  *  email: email,
@@ -29,7 +29,15 @@ app.get("/login", (req, res) => {
   res.json({ message: "User logged in" });
 });
 
-// Register Route
+/** Login Route
+ *  req.body:
+ * {
+ *  email: 'email',
+ *  password: 'password',
+ *  name: 'name',
+ *  team: 'team'
+ * }
+*/
 app.post("/register", (req, res) => {
   console.log(req.body);
   res.json({ message: "User registered" });

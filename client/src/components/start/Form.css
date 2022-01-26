@@ -36,6 +36,10 @@
   text-transform: uppercase;
 }
 
+.googleLoginButton {
+  padding-top: 2% !important;
+}
+
 @media (max-width: 600px) {
   .form {
     width: 100vw;

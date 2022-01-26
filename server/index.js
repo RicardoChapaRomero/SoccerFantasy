@@ -10,8 +10,37 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // Routes
+// Test Route
 app.get("/api", (req, res) => {
+  console.log('here');
   res.json({ message: "Hello from server!" });
+});
+
+/** Login Route
+ *  req.query:
+ * {
+ *  method: 'form' / 'google'
+ *  email: email,
+ *  password: password
+ * }
+*/
+app.get("/login", (req, res) => {
+  console.log(req.query);
+  res.json({ message: "User logged in" });
+});
+
+/** Login Route
+ *  req.body:
+ * {
+ *  email: 'email',
+ *  password: 'password',
+ *  name: 'name',
+ *  team: 'team'
+ * }
+*/
+app.post("/register", (req, res) => {
+  console.log(req.body);
+  res.json({ message: "User registered" });
 });
 
 // All other GET requests not handled before will return our React app

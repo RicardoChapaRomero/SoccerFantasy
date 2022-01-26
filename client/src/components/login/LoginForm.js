@@ -13,7 +13,7 @@ import { GoogleLogin } from 'react-google-login';
 import {
   googleAuthOnSuccess,
   googleAuthOnFailure,
-  loginAuth
+  formAuth
 } from '../../scripts/apiScripts';
 
 function LoginForm(props) {
@@ -43,7 +43,7 @@ function LoginForm(props) {
   };
 
   const handleLogin = () => {
-    loginAuth(values.email, values.password);
+    formAuth(values.email, values.password);
   };
 
   return (
@@ -112,15 +112,16 @@ function LoginForm(props) {
           <Button onClick={handleLogin} variant="contained">
             login
           </Button>
-
-          <GoogleLogin
-            clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
-            buttonText="Login with Google"
-            onSuccess={googleAuthOnSuccess}
-            onFailure={googleAuthOnFailure}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={false}
-          />
+          <div className="googleLoginButton">
+            <GoogleLogin
+              clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+              buttonText="Login with Google"
+              onSuccess={googleAuthOnSuccess}
+              onFailure={googleAuthOnFailure}
+              cookiePolicy={'single_host_origin'}
+              isSignedIn={false}
+            />
+          </div>
         </Stack>
       </div>
       <div className="footer">

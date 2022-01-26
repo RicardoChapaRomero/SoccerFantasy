@@ -8,7 +8,11 @@ const doFetch = (url, method = 'GET', params = {}) => {
   } else {
     fetch(url, {
       method: method,
-      body: JSON.stringify(params)
+      body: JSON.stringify(params),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     })
       .then((response) => response.json())
       .then((response) => {
@@ -17,7 +21,7 @@ const doFetch = (url, method = 'GET', params = {}) => {
   }
 };
 
-// Google Login Handlers
+// Login Google Handlers
 export function googleAuthOnSuccess(response) {
   const userProfile = response.profileObj;
   const userData = {
@@ -30,12 +34,13 @@ export function googleAuthOnSuccess(response) {
 }
 
 export function googleAuthOnFailure(response) {
+  // Todo
   console.log('Login Failed:');
   console.log(response);
 }
 
-// Form Login Handlers
-export function loginAuth(email, password) {
+// Login Form Handler
+export function formAuth(email, password) {
   const userData = {
     method: 'form',
     email: email,
@@ -43,4 +48,17 @@ export function loginAuth(email, password) {
   };
 
   doFetch('/login', 'GET', userData);
+}
+
+// Register Form Handler
+export function formRegister(email, password, team, name) {
+  const userData = {
+    method: 'form',
+    email: email,
+    password: password,
+    name: name,
+    team: team
+  };
+
+  doFetch('/register', 'POST', userData);
 }

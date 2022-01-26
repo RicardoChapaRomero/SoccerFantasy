@@ -10,10 +10,10 @@ import Lock from '@mui/icons-material/Lock';
 import Email from '@mui/icons-material/Email';
 import Groups from '@mui/icons-material/Groups';
 import { validateEmail } from '../../utils';
+import { formRegister } from '../../scripts/apiScripts';
 
 function RegisterForm(props) {
-  const { email, password, name, teamName, onChange, onSubmit } =
-    props;
+  const { email, password, name, teamName, onChange } = props;
   const [values, setValues] = useState({
     email: email,
     password: password,
@@ -40,6 +40,15 @@ function RegisterForm(props) {
             : 'Invalid email'
       });
     }
+  };
+
+  const handleRegister = () => {
+    formRegister(
+      values.email,
+      values.password,
+      values.name,
+      values.teamName
+    );
   };
 
   return (
@@ -131,7 +140,7 @@ function RegisterForm(props) {
             height: '20%'
           }}
         >
-          <Button onClick={onSubmit} variant="contained">
+          <Button onClick={handleRegister} variant="contained">
             Register
           </Button>
         </Stack>
@@ -150,15 +159,13 @@ RegisterForm.propTypes = {
   password: PropTypes.string,
   name: PropTypes.string,
   teamName: PropTypes.string,
-  onChange: PropTypes.func,
-  onSubmit: PropTypes.func
+  onChange: PropTypes.func
 };
 RegisterForm.defaultProps = {
   email: '',
   password: '',
   name: '',
   teamName: '',
-  onChange: () => console.log('onchange'),
-  onSubmit: () => console.log('onsubmit')
+  onChange: () => console.log('onchange')
 };
 export default RegisterForm;

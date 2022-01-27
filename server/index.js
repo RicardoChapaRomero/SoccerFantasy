@@ -1,6 +1,13 @@
 // server/index.js
 const express = require("express");
 const path = require('path');
+const fs = require('fs'); // Only used for mockDB JSON
+
+// Function to read JSON file mocking mongo DB
+const readMockDB = () => {
+  const rawdata = fs.readFileSync(path.resolve(__dirname, './mockDB/mockDB.json'));
+  return JSON.parse(rawdata);
+};
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -25,8 +32,25 @@ app.get("/api", (req, res) => {
  * }
 */
 app.get("/login", (req, res) => {
-  console.log(req.query);
-  res.json({ message: "User logged in" });
+  const data = readMockDB();
+  const method = req.query.method;
+  let userInDB = false;
+  data["users"].forEach((user) => {
+    if (method == 'google' && user['method'] == 'google') {
+      if (user['email'] == req.query.email) {
+        res.json({ message: { userIsRegistered: 'true' } });
+        userInDB = true;
+        return;
+      }
+    } else if (method == 'form' && user['method'] == 'form') {
+      if (user['email'] == req.query.email && user['password'] == req.query.password) {
+        res.json({ message: { userIsRegistered: 'true' } });
+        userInDB = true;
+        return;
+      }
+    }
+  });
+  if (!userInDB) { res.json({ message: { userIsRegistered: 'false' } }); }
 });
 
 /** Login Route

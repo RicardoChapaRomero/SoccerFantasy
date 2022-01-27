@@ -7,7 +7,7 @@ import StartPage from './components/start/StartPage';
 
 function App() {
   const pages = ['team', 'social', 'stats', 'about'];
-  const isAuth = true;
+  const isAuth = false;
   if (!isAuth) {
     return <StartPage />;
   }

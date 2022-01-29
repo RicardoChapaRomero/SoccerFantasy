@@ -51,12 +51,12 @@ export function formAuth(email, password) {
 }
 
 // Register Form Handler
-export function formRegister(email, password, team, name) {
+export function formRegister(email, password, teamName, name) {
   const userData = {
     email: email,
     password: password,
     name: name,
-    team: team
+    teamName: teamName
   };
 
   doFetch('/register', 'POST', userData);

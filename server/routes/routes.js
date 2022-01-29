@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const router = express.Router();
 const User = require('../models/model');
 
@@ -49,6 +50,7 @@ router.post("/register", async (req, res) => {
     return;
   }
 
+  // Push new user to DB
   const new_user = new User(req.body);
   await new_user.save();
   res.json({ message: { alreadyRegistered: false, registered: true } });

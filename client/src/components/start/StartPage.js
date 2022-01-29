@@ -4,12 +4,13 @@ import Messi from './Messi';
 import LoginForm from '../login/LoginForm';
 import RegisterForm from '../register/RegisterForm';
 
-function StartPage() {
+function StartPage(props) {
+  const { onAuthChange } = props;
   const [isLoginForm, setIsLoginForm] = useState(true);
   const Form = isLoginForm ? (
-    <LoginForm onChange={() => setIsLoginForm(false)} />
+    <LoginForm onAuthChange={onAuthChange} onChange={() => setIsLoginForm(false)} />
   ) : (
-    <RegisterForm onChange={() => setIsLoginForm(true)} />
+    <RegisterForm onAuthChange={onAuthChange} onChange={() => setIsLoginForm(true)} />
   );
 
   return (

@@ -1,15 +1,18 @@
 // client/src/App.js
 
 import './App.css';
+import { useState } from 'react';
 import Navbar from './components/navbar/Navbar';
 import { Routes, Route } from 'react-router-dom';
 import StartPage from './components/start/StartPage';
 
 function App() {
   const pages = ['team', 'social', 'stats', 'about'];
-  const isAuth = false;
+  const [isAuth, setIsAuth] = useState(false);
   if (!isAuth) {
-    return <StartPage />;
+    return <StartPage 
+      onAuthChange={(isAuth) => setIsAuth(isAuth)}
+      />;
   }
   return (
     <div>

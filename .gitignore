@@ -1,6 +1,7 @@
 # Server
 /node_modules
 package-lock.json
+.env
 
 # Client 
 # dependencies

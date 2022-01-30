@@ -1,54 +1,26 @@
 // server/index.js
 const express = require("express");
 const path = require('path');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-const PORT = process.env.PORT || 3001;
+dotenv.config();
 const app = express();
 
+const PORT = process.env.PORT || 3001;
+mongoose.connect(process.env.MONGODB)
+  .then(db => console.log('Connected to DB'))
+  .catch(err => console.log(err));
+
+const routes = require('./routes/routes');
+
+app.set('port', PORT);
 app.use(express.json());
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-// Routes
-// Test Route
-app.get("/api", (req, res) => {
-  console.log('here');
-  res.json({ message: "Hello from server!" });
-});
-
-/** Login Route
- *  req.query:
- * {
- *  method: 'form' / 'google'
- *  email: email,
- *  password: password
- * }
-*/
-app.get("/login", (req, res) => {
-  console.log(req.query);
-  res.json({ message: "User logged in" });
-});
-
-/** Login Route
- *  req.body:
- * {
- *  email: 'email',
- *  password: 'password',
- *  name: 'name',
- *  team: 'team'
- * }
-*/
-app.post("/register", (req, res) => {
-  console.log(req.body);
-  res.json({ message: "User registered" });
-});
-
-// All other GET requests not handled before will return our React app
-//
-// Leave this route after all defined routes and middleware
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
+// routes
+app.use('/', routes);
 
 // Listener
 app.listen(PORT, () => {

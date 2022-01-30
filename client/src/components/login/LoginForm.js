@@ -17,7 +17,7 @@ import {
 } from '../../scripts/apiScripts';
 
 function LoginForm(props) {
-  const { email, password, onChange } = props;
+  const { email, password, onChange, onAuthChange } = props;
   const [values, setValues] = useState({
     email: email,
     password: password,
@@ -35,15 +35,22 @@ function LoginForm(props) {
         ...errors,
         ['email']:
           event.target.value !== '' &&
-          validateEmail(event.target.value)
+            validateEmail(event.target.value)
             ? ''
             : 'Invalid email'
       });
     }
   };
 
-  const handleLogin = () => {
-    formAuth(values.email, values.password);
+  const handleLogin = async () => {
+    const isAuth =
+      await formAuth(values.email, values.password);
+    onAuthChange(isAuth);
+  };
+
+  const handleGoogleOnSuccess = async (response) => {
+    const isAuth = await googleAuthOnSuccess(response);
+    onAuthChange(isAuth);
   };
 
   return (
@@ -116,7 +123,7 @@ function LoginForm(props) {
             <GoogleLogin
               clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
               buttonText="Login with Google"
-              onSuccess={googleAuthOnSuccess}
+              onSuccess={handleGoogleOnSuccess}
               onFailure={googleAuthOnFailure}
               cookiePolicy={'single_host_origin'}
               isSignedIn={false}
@@ -136,7 +143,8 @@ function LoginForm(props) {
 LoginForm.propTypes = {
   email: PropTypes.string,
   password: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onAuthChange: PropTypes.func
 };
 LoginForm.defaultProps = {
   email: '',

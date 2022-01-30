@@ -1,12 +1,12 @@
-const doFetch = (url, method = 'GET', params = {}) => {
+const doFetch = async (url, method = 'GET', params = {}) => {
   if (method === 'GET') {
-    fetch(`${url}?${new URLSearchParams(params).toString()}`)
+    return await fetch(`${url}?${new URLSearchParams(params).toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.message);
+        return data.message;
       });
   } else {
-    fetch(url, {
+    return await fetch(url, {
       method: method,
       body: JSON.stringify(params),
       headers: {
@@ -14,15 +14,24 @@ const doFetch = (url, method = 'GET', params = {}) => {
         'Content-Type': 'application/json'
       }
     })
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response.message);
+      .then((res) => res.json())
+      .then((data) => {
+        return data.message;
       });
   }
 };
 
-// Login Google Handlers
-export function googleAuthOnSuccess(response) {
+
+/** Login Google Handler
+ * 
+ * doFetch returns:
+ * {
+ *  message: { 
+ *    userIsRegistered: true/false
+ *  }
+ * }
+ * */ 
+export async function googleAuthOnSuccess(response) {
   const userProfile = response.profileObj;
   const userData = {
     method: 'google',
@@ -30,34 +39,55 @@ export function googleAuthOnSuccess(response) {
     name: userProfile.name
   };
 
-  doFetch('/login', 'GET', userData);
+ const res =  await doFetch('/login', 'GET', userData);
+ return res.userIsRegistered;
 }
 
 export function googleAuthOnFailure(response) {
-  // Todo
-  console.log('Login Failed:');
-  console.log(response);
+  alert(
+    `Something went wrong with Google Login.`
+      `Try with your email and password`);
 }
 
-// Login Form Handler
-export function formAuth(email, password) {
+/** Login Form Handler
+ * 
+ * doFetch returns:
+ * {
+ *  message: { 
+ *    userIsRegistered: true/false
+ *  }
+ * }
+ * */ 
+export async function formAuth(email, password) {
   const userData = {
     method: 'form',
     email: email,
     password: password
   };
 
-  doFetch('/login', 'GET', userData);
+  const res = await doFetch('/login', 'GET', userData);
+  return res.userIsRegistered;
 }
 
-// Register Form Handler
-export function formRegister(email, password, team, name) {
+/** Register Form Handler
+ * 
+ * doFetch returns:
+ * {
+ *  message: {
+ *    alreadyRegistered: true/false,
+ *    registered: true
+ *  }
+ * }
+ * 
+ * */
+export async function formRegister(email, password, teamName, name) {
   const userData = {
     email: email,
     password: password,
     name: name,
-    team: team
+    teamName: teamName
   };
 
-  doFetch('/register', 'POST', userData);
+  const res = await doFetch('/register', 'POST', userData);
+  return res;
 }

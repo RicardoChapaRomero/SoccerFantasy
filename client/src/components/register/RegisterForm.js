@@ -13,7 +13,7 @@ import { validateEmail } from '../../utils';
 import { formRegister } from '../../scripts/apiScripts';
 
 function RegisterForm(props) {
-  const { email, password, name, teamName, onChange } = props;
+  const { email, password, name, teamName, onChange, onAuthChange} = props;
   const [values, setValues] = useState({
     email: email,
     password: password,
@@ -42,13 +42,18 @@ function RegisterForm(props) {
     }
   };
 
-  const handleRegister = () => {
-    formRegister(
+  const handleRegister = async () => {
+    const res = await formRegister(
       values.email,
       values.password,
       values.name,
       values.teamName
     );
+    if (res.alreadyRegistered) {
+      alert('User already exists');
+    } else {
+      onAuthChange(res.registered);
+    }
   };
 
   return (
@@ -159,7 +164,8 @@ RegisterForm.propTypes = {
   password: PropTypes.string,
   name: PropTypes.string,
   teamName: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onAuthChange: PropTypes.func
 };
 RegisterForm.defaultProps = {
   email: '',

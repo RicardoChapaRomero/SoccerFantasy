@@ -15,9 +15,10 @@ import Logo from '../Logo';
 import colors from '../../colors';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { GoogleLogout } from 'react-google-login';
 
 const ResponsiveAppBar = (props) => {
-  const { pages } = props;
+  const { pages, onAuthChange } = props;
   const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -35,6 +36,11 @@ const ResponsiveAppBar = (props) => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogoutEvent = (googleLogoutCallback) => {
+    handleCloseUserMenu();
+    googleLogoutCallback();
   };
 
   const LogoC = (
@@ -161,13 +167,34 @@ const ResponsiveAppBar = (props) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">
-                    {setting}
-                  </Typography>
-                </MenuItem>
-              ))}
+              {settings.map((setting) => {
+                if (setting === 'Logout') {
+                  return (
+                    <GoogleLogout
+                      clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+                      onLogoutSuccess={() => onAuthChange(false)}
+                      render={renderProps => (
+                        <MenuItem
+                          key={setting}
+                          onClick={() => handleLogoutEvent(renderProps.onClick)}
+                          disabled={renderProps.disabled}
+                        >
+                          <Typography textAlign="center">
+                            {setting}
+                          </Typography>
+                        </MenuItem>
+                      )}
+                    ></GoogleLogout>
+                  );
+                }
+                return (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">
+                      {setting}
+                    </Typography>
+                  </MenuItem>
+                )
+              })}
             </Menu>
           </Box>
         </Toolbar>
@@ -176,7 +203,8 @@ const ResponsiveAppBar = (props) => {
   );
 };
 ResponsiveAppBar.propTypes = {
-  pages: PropTypes.array
+  pages: PropTypes.array,
+  onAuthChange: PropTypes.func
 };
 ResponsiveAppBar.defaultProps = {
   pages: []

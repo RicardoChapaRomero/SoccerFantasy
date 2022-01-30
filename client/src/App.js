@@ -16,7 +16,7 @@ function App() {
   }
   return (
     <div>
-      <Navbar pages={pages}> </Navbar>
+      <Navbar pages={pages} onAuthChange={(isAuth) => setIsAuth(isAuth)}> </Navbar>
       <Routes>
         <Route path="/" element={<h1> home</h1>} />
         <Route path="/team" element={<h1> team</h1>} />

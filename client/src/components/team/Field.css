@@ -1,0 +1,44 @@
+.container {
+  width: 50vw;
+  height: calc(100vh - 69px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.field {
+  width: 70%;
+  height: 80%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-image: linear-gradient(
+      to top,
+      transparent 49.75%,
+      var(--beige) 0 50.25%,
+      transparent 0
+    ),
+    /* linea en medio*/
+      radial-gradient(
+        circle at 50% 50%,
+        var(--beige) 1%,
+        transparent 0
+      ),
+    /* point*/
+      radial-gradient(
+        circle at 50% 50%,
+        transparent 14%,
+        var(--beige) 0 14.75%,
+        transparent 0
+      ),
+    /* mid circle*/
+      repeating-linear-gradient(
+        to top,
+        var(--thirdGreen) 0 10%,
+        var(--secondaryGreen) 0 20%
+      ); /* fondo bicolor*/
+}
+.line {
+  display: flex;
+  justify-content: space-evenly;
+}

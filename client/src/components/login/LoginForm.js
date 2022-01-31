@@ -45,12 +45,12 @@ function LoginForm(props) {
   const handleLogin = async () => {
     const isAuth =
       await formAuth(values.email, values.password);
-    onAuthChange(isAuth);
+      !isAuth ? onChange() : onAuthChange(isAuth);
   };
 
   const handleGoogleOnSuccess = async (response) => {
     const isAuth = await googleAuthOnSuccess(response);
-    onAuthChange(isAuth);
+    !isAuth ? onChange() : onAuthChange(isAuth);
   };
 
   return (

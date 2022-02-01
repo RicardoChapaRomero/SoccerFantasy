@@ -13,7 +13,8 @@ import { validateEmail } from '../../utils';
 import { formRegister } from '../../scripts/apiScripts';
 
 function RegisterForm(props) {
-  const { email, password, name, teamName, onChange, onAuthChange} = props;
+  const { email, password, name, teamName, onChange, onAuthChange } =
+    props;
   const [values, setValues] = useState({
     email: email,
     password: password,
@@ -63,19 +64,16 @@ function RegisterForm(props) {
           justifyContent="center"
           alignItems="center"
           sx={{
-            height: '20%'
+            height: '25%'
           }}
         >
           <h2> registration </h2>
         </Stack>
         <Stack
           direction="column"
-          spacing={3}
+          spacing={4}
           justifyContent="center"
           alignItems="center"
-          sx={{
-            height: '60%'
-          }}
         >
           <TextField
             error={errors.email !== ''}

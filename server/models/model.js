@@ -81,11 +81,25 @@ const user_fantasy = schema({
     }
   }
 });
+
+const rounds_schema = schema({
+  round_id: Number,
+  round_name: String,
+  referee: String,
+  date: String,
+  venue_id: Number,
+  status: String,
+  home_team: Number,
+  away_team: Number,
+  goals_home: Number,
+  goals_away: Number
+});
 const User = mongoose.model('Users', user_schema);
 const Player = mongoose.model('Players', player_schema);
 const Dt = mongoose.model('Dts', dt_schema);
 const Team = mongoose.model('Teams', team_schema);
 const Venue = mongoose.model('Venues', venue_schema);
 const Standing = mongoose.model('Standings', standings_schema);
+const Round = mongoose.model('Rounds', rounds_schema);
 
-export { User, Player, Dt, Team, Venue, Standing };
+export { User, Player, Dt, Team, Venue, Standing, Round };

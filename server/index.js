@@ -8,8 +8,7 @@ import { router } from './routes/routes.js';
 dotenv.config();
 const app = express();
 const __dirname = path.resolve();
-const uri =
-  'mongodb+srv://mikeinsane:password@fantasy.wsmyk.mongodb.net/Fantasy?retryWrites=true&w=majority';
+const uri = `mongodb+srv://mikeinsane:${process.env.MONGO_KEY}@fantasy.wsmyk.mongodb.net/Fantasy?retryWrites=true&w=majority`;
 
 const PORT = process.env.PORT || 3001;
 mongoose

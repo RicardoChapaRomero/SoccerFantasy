@@ -7,7 +7,8 @@ import {
   Dt,
   Team,
   Venue,
-  Standing
+  Standing,
+  Round
 } from '../models/model.js';
 
 const router = express.Router();
@@ -29,7 +30,7 @@ router.get('/api/teams', async (req, res) => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        'x-rapidapi-key': 'passcode'
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY
       }
     }
   )
@@ -58,8 +59,7 @@ router.get('/api/venues', async (req, res) => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        'x-rapidapi-key':
-          'ae252d6cf6msh604371e6acd0647p1b313djsn032fff9f71e7'
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY
       }
     }
   )
@@ -89,8 +89,7 @@ router.get('/api/standings', async (req, res) => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        'x-rapidapi-key':
-          'ae252d6cf6msh604371e6acd0647p1b313djsn032fff9f71e7'
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY
       }
     }
   )
@@ -113,6 +112,73 @@ router.get('/api/standings', async (req, res) => {
     standings_tmp.save();
   });
 
+  res.json('success');
+});
+
+router.get('/api/fixtures/back', async (req, res) => {
+  const response_back = await fetch(
+    'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=262&season=2021&timezone=America/Mexico_City&last=9',
+    {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY
+      }
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    });
+  response_back.response.forEach((round) => {
+    const round_tmp = new Round({
+      round_id: round.fixture.id,
+      round_name: round.league.round,
+      referee: round.referee,
+      date: round.date,
+      venue_id: round.fixture.venue.id,
+      status: round.fixture.status.long,
+      home_team_id: round.teams.home.id,
+      away_team_id: round.teams.away.id,
+      goals_home: round.goals.home,
+      goals_away: round.goals.away
+    });
+    round_tmp.save();
+  });
+
+  res.json('success');
+});
+
+router.get('/api/fixtures/front', async (req, res) => {
+  const response_back = await fetch(
+    'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=262&season=2021&timezone=America/Mexico_City&next=9',
+    {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY
+      }
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    });
+  response_back.response.forEach((round) => {
+    const round_tmp = new Round({
+      round_id: round.fixture.id,
+      round_name: round.league.round,
+      referee: round.referee,
+      date: round.date,
+      venue_id: round.fixture.venue.id,
+      status: round.fixture.status.long,
+      home_team_id: round.teams.home.id,
+      away_team_id: round.teams.away.id,
+      goals_home: round.goals.home,
+      goals_away: round.goals.away
+    });
+    round_tmp.save();
+  });
   res.json('success');
 });
 
@@ -140,8 +206,7 @@ router.get('/api/players', async (req, res) => {
         method: 'GET',
         headers: {
           'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-          'x-rapidapi-key':
-            'ae252d6cf6msh604371e6acd0647p1b313djsn032fff9f71e7'
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY
         }
       }
     )

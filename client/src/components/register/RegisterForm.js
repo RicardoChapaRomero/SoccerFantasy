@@ -61,20 +61,14 @@ function RegisterForm(props) {
     <div className="form">
       <div className="login">
         <Stack
+          direction="column"
+          spacing={{ xl: 5, xs: 3 }}
           justifyContent="center"
           alignItems="center"
-          sx={{
-            height: '25%'
-          }}
+          mt={{ xl: 6, xs: 4 }}
         >
           <h2> registration </h2>
-        </Stack>
-        <Stack
-          direction="column"
-          spacing={4}
-          justifyContent="center"
-          alignItems="center"
-        >
+
           <TextField
             error={errors.email !== ''}
             id="outlined-email-input"
@@ -134,15 +128,6 @@ function RegisterForm(props) {
               )
             }}
           />
-        </Stack>
-
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          sx={{
-            height: '20%'
-          }}
-        >
           <Button onClick={handleRegister} variant="contained">
             Register
           </Button>

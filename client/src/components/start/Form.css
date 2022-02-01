@@ -10,7 +10,7 @@
 .login {
   background-color: var(--beige);
   width: 90%;
-  height: 80%;
+  height: 80vh;
   border-radius: 25px;
   box-shadow: 10px 10px #122c12;
 }
@@ -34,6 +34,7 @@
 .login h2 {
   color: var(--primaryGreen);
   text-transform: uppercase;
+  margin: 0;
 }
 
 .divider {
@@ -67,6 +68,9 @@
 @media (max-width: 600px) {
   .form {
     width: 100vw;
+  }
+  .login {
+    width: 98%;
   }
 }
 @media (min-width: 601px) and (max-width: 900px) {

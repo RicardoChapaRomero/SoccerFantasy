@@ -73,6 +73,7 @@ const user_fantasy = schema({
   team_lineup: {
     type: Object,
     default: {
+      goalkeeper: String,
       defense: [''],
       midfield: [''],
       attack: [''],
@@ -89,8 +90,8 @@ const rounds_schema = schema({
   date: String,
   venue_id: Number,
   status: String,
-  home_team: Number,
-  away_team: Number,
+  home_team_id: Number,
+  away_team_id: Number,
   goals_home: Number,
   goals_away: Number
 });

@@ -187,6 +187,7 @@ router.get('/api/users_fantasy/', async (req, res) => {
     lineup: '4-3-3',
     budget: 5000000,
     team_lineup: {
+      goalkeeper: '1237',
       defense: ['1232'],
       midfield: ['1235'],
       attack: ['1234'],

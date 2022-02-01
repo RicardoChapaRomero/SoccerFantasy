@@ -7,10 +7,10 @@ import Stack from '@mui/material/Stack';
 const Team = () => {
   return (
     <Stack
-      justifyContent="center"
+      justifyContent="space-evenly"
       alignItems="center"
       direction={{ xs: 'column', md: 'row' }}
-      spacing={6}
+      spacing={{ xs: 5, md: 2 }}
       sx={{
         padding: '3vh 0'
       }}

@@ -50,155 +50,156 @@ const ResponsiveAppBar = (props) => {
   );
 
   return (
-    <AppBar color="success" position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Box
-            noWrap
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' }
+    <AppBar
+      sx={{ padding: '0 15px' }}
+      color="success"
+      position="static"
+    >
+      <Toolbar disableGutters>
+        <Box
+          noWrap
+          sx={{
+            mr: 2,
+            display: { xs: 'none', md: 'flex' }
+          }}
+        >
+          {LogoC}
+        </Box>
+        <Box
+          sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+        >
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElNav}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left'
             }}
-          >
-            {LogoC}
-          </Box>
-          <Box
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
-          >
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left'
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' }
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Link
-                    to={'/' + page}
-                    style={{
-                      textDecoration: 'none',
-                      textTransform: 'uppercase',
-                      textAlign: 'center',
-                      color: 'black'
-                    }}
-                  >
-                    {page}
-                  </Link>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <Box
-            noWrap
-            sx={{
-              flexGrow: 1,
-              display: { xs: 'flex', md: 'none' }
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left'
             }}
-          >
-            {LogoC}
-          </Box>
-          <Box
-            sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
+            sx={{
+              display: { xs: 'block', md: 'none' }
+            }}
           >
             {pages.map((page) => (
-              <Link
-                to={'/' + page}
-                style={{ textDecoration: 'none' }}
-              >
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{
-                    my: 2,
-                    color: colors.beige,
-                    display: 'block'
+              <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <Link
+                  to={'/' + page}
+                  style={{
+                    textDecoration: 'none',
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
+                    color: 'black'
                   }}
                 >
                   {page}
-                </Button>
-              </Link>
+                </Link>
+              </MenuItem>
             ))}
-          </Box>
+          </Menu>
+        </Box>
+        <Box
+          noWrap
+          sx={{
+            flexGrow: 1,
+            display: { xs: 'flex', md: 'none' }
+          }}
+        >
+          {LogoC}
+        </Box>
+        <Box
+          sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+        >
+          {pages.map((page) => (
+            <Link to={'/' + page} style={{ textDecoration: 'none' }}>
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{
+                  my: 2,
+                  color: colors.beige,
+                  display: 'block'
+                }}
+              >
+                {page}
+              </Button>
+            </Link>
+          ))}
+        </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt="Remy Sharp"
-                  src="/static/images/avatar/2.jpg"
-                />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => {
-                if (setting === 'Logout') {
-                  return (
-                    <GoogleLogout
-                      clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
-                      onLogoutSuccess={() => onAuthChange(false)}
-                      render={renderProps => (
-                        <MenuItem
-                          key={setting}
-                          onClick={() => handleLogoutEvent(renderProps.onClick)}
-                          disabled={renderProps.disabled}
-                        >
-                          <Typography textAlign="center">
-                            {setting}
-                          </Typography>
-                        </MenuItem>
-                      )}
-                    ></GoogleLogout>
-                  );
-                }
+        <Box sx={{ flexGrow: 0 }}>
+          <Tooltip title="Open settings">
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <Avatar
+                alt="Remy Sharp"
+                src="/static/images/avatar/2.jpg"
+              />
+            </IconButton>
+          </Tooltip>
+          <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            {settings.map((setting) => {
+              if (setting === 'Logout') {
                 return (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                )
-              })}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
+                  <GoogleLogout
+                    clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+                    onLogoutSuccess={() => onAuthChange(false)}
+                    render={(renderProps) => (
+                      <MenuItem
+                        key={setting}
+                        onClick={() =>
+                          handleLogoutEvent(renderProps.onClick)
+                        }
+                        disabled={renderProps.disabled}
+                      >
+                        <Typography textAlign="center">
+                          {setting}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                  ></GoogleLogout>
+                );
+              }
+              return (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">
+                    {setting}
+                  </Typography>
+                </MenuItem>
+              );
+            })}
+          </Menu>
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 };

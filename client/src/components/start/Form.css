@@ -9,7 +9,7 @@
 }
 .login {
   background-color: var(--beige);
-  width: 70%;
+  width: 90%;
   height: 80%;
   border-radius: 25px;
   box-shadow: 10px 10px #122c12;
@@ -36,8 +36,32 @@
   text-transform: uppercase;
 }
 
-.googleLoginButton {
-  padding-top: 2% !important;
+.divider {
+  display: flex;
+  content: '';
+  flex: 1;
+  width: 255px;
+  color: var(--lightGray);
+  font-size: 0.95rem;
+}
+
+.divider:before,
+.divider:after {
+  content: '';
+  flex: 1;
+}
+.line {
+  align-items: center;
+  margin: 1em -1em;
+}
+.line:before,
+.line:after {
+  height: 1px;
+  margin: 0 1em;
+}
+.razor:before,
+.razor:after {
+  box-shadow: 0 0.35px 0 var(--lightGray);
 }
 
 @media (max-width: 600px) {
@@ -48,5 +72,10 @@
 @media (min-width: 601px) and (max-width: 900px) {
   .form {
     width: 50vw;
+  }
+}
+@media (min-width: 1200px) {
+  .login {
+    width: 70%;
   }
 }

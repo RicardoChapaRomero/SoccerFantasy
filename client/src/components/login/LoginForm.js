@@ -15,7 +15,7 @@ import {
   googleAuthOnFailure,
   formAuth
 } from '../../scripts/apiScripts';
-
+import GoogleIcon from '@mui/icons-material/Google';
 function LoginForm(props) {
   const { email, password, onChange, onAuthChange } = props;
   const [values, setValues] = useState({
@@ -35,7 +35,7 @@ function LoginForm(props) {
         ...errors,
         ['email']:
           event.target.value !== '' &&
-            validateEmail(event.target.value)
+          validateEmail(event.target.value)
             ? ''
             : 'Invalid email'
       });
@@ -43,8 +43,7 @@ function LoginForm(props) {
   };
 
   const handleLogin = async () => {
-    const isAuth =
-      await formAuth(values.email, values.password);
+    const isAuth = await formAuth(values.email, values.password);
     onAuthChange(isAuth);
   };
 
@@ -67,12 +66,37 @@ function LoginForm(props) {
         </Stack>
         <Stack
           direction="column"
-          spacing={3}
+          spacing={4}
           justifyContent="center"
           alignItems="center"
-          sx={{
-            height: '50%'
-          }}
+          mb={4}
+        >
+          <GoogleLogin
+            clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+            buttonText="Login with Google"
+            onSuccess={handleGoogleOnSuccess}
+            onFailure={googleAuthOnFailure}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={false}
+            render={(p) => (
+              <Button
+                color="warning"
+                onClick={p.onClick}
+                startIcon={<GoogleIcon color="primary" />}
+                variant="contained"
+              >
+                Login
+              </Button>
+            )}
+          />
+          <div class="divider line razor">or</div>
+        </Stack>
+        <Stack
+          direction="column"
+          spacing={4}
+          justifyContent="center"
+          alignItems="center"
+          mt={8}
         >
           <TextField
             error={errors.email !== ''}
@@ -109,26 +133,10 @@ function LoginForm(props) {
           />
         </Stack>
 
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          sx={{
-            height: '20%'
-          }}
-        >
+        <Stack justifyContent="center" mt={8} alignItems="center">
           <Button onClick={handleLogin} variant="contained">
             login
           </Button>
-          <div className="googleLoginButton">
-            <GoogleLogin
-              clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
-              buttonText="Login with Google"
-              onSuccess={handleGoogleOnSuccess}
-              onFailure={googleAuthOnFailure}
-              cookiePolicy={'single_host_origin'}
-              isSignedIn={false}
-            />
-          </div>
         </Stack>
       </div>
       <div className="footer">

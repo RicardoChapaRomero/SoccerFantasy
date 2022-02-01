@@ -29,8 +29,7 @@ router.get('/api/teams', async (req, res) => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
-        'x-rapidapi-key':
-          'ae252d6cf6msh604371e6acd0647p1b313djsn032fff9f71e7'
+        'x-rapidapi-key': 'passcode'
       }
     }
   )

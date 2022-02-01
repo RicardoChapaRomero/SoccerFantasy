@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 const uri =
-  'mongodb+srv://mikeinsane:soccerFantasy@fantasy.wsmyk.mongodb.net/Fantasy?retryWrites=true&w=majority';
+  'mongodb+srv://mikeinsane:password@fantasy.wsmyk.mongodb.net/Fantasy?retryWrites=true&w=majority';
 
 const PORT = process.env.PORT || 3001;
 mongoose

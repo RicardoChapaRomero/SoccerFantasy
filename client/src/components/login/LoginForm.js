@@ -58,18 +58,16 @@ function LoginForm(props) {
         <Stack
           justifyContent="center"
           alignItems="center"
-          sx={{
-            height: '25%'
-          }}
+          mt={{ xl: 4, xs: 3 }}
         >
           <Logo> </Logo>
         </Stack>
         <Stack
           direction="column"
-          spacing={4}
+          spacing={{ xl: 4, xs: 3 }}
           justifyContent="center"
           alignItems="center"
-          mb={4}
+          mt={{ xl: 7, xs: 5 }}
         >
           <GoogleLogin
             clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
@@ -93,10 +91,10 @@ function LoginForm(props) {
         </Stack>
         <Stack
           direction="column"
-          spacing={4}
+          spacing={{ xl: 4, xs: 3 }}
           justifyContent="center"
           alignItems="center"
-          mt={8}
+          mt={{ xl: 8, xs: 4 }}
         >
           <TextField
             error={errors.email !== ''}
@@ -133,7 +131,11 @@ function LoginForm(props) {
           />
         </Stack>
 
-        <Stack justifyContent="center" mt={8} alignItems="center">
+        <Stack
+          justifyContent="center"
+          mt={{ xl: 8, xs: 4 }}
+          alignItems="center"
+        >
           <Button onClick={handleLogin} variant="contained">
             login
           </Button>

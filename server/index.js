@@ -1,18 +1,23 @@
 // server/index.js
-const express = require("express");
-const path = require('path');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import express from 'express';
+import path from 'path';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import { router } from './routes/routes.js';
 
 dotenv.config();
 const app = express();
+const __dirname = path.resolve();
+const uri = `mongodb+srv://mikeinsane:${process.env.MONGO_KEY}@fantasy.wsmyk.mongodb.net/Fantasy?retryWrites=true&w=majority`;
 
 const PORT = process.env.PORT || 3001;
-mongoose.connect(process.env.MONGODB)
-  .then(db => console.log('Connected to DB'))
-  .catch(err => console.log(err));
-
-const routes = require('./routes/routes');
+mongoose
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then((db) => console.log('Connected to DB'))
+  .catch((err) => console.log(err));
 
 app.set('port', PORT);
 app.use(express.json());
@@ -20,7 +25,7 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // routes
-app.use('/', routes);
+app.use('/', router);
 
 // Listener
 app.listen(PORT, () => {

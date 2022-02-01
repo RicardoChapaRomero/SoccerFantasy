@@ -1,5 +1,53 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const schema = mongoose.Schema;
+
+const venue_schema = schema({
+  venue_id: String,
+  name: String,
+  address: String,
+  city: String,
+  capacity: String,
+  image: String
+});
+
+const team_schema = schema({
+  team_id: String,
+  name: String,
+  founded: Number,
+  logo: String,
+  venue_id: String
+});
+
+const player_schema = schema({
+  player_id: String,
+  name: String,
+  age: Number,
+  position: String,
+  photo: String,
+  rating: String,
+  team_id: String,
+  goals: Number
+});
+
+const standings_schema = schema({
+  rank: Number,
+  team_id: String,
+  points: Number,
+  goals_diff: Number,
+  goals_for: Number,
+  goals_against: Number,
+  total_wins: Number,
+  total_draws: Number,
+  total_losses: Number
+});
+
+const dt_schema = schema({
+  dt_id: String,
+  name: String,
+  age: Number,
+  nationality: String,
+  photo: String
+});
 
 const user_schema = schema({
   name: String,
@@ -9,65 +57,35 @@ const user_schema = schema({
     default: ''
   },
   teamName: String,
-  lineup: String,
-  budget: Number,
-  team_lineup: {
-    defense: [player_schema],
-    midfield: [player_schema],
-    attack: [player_schema],
-    dt: [String]
-  },
   method: String
 });
 
-const standings_schema = schema({
-  ranks: [
-    {
-      team: team_schema,
-      rank: Number,
-      goals_diff: Number,
-      total_wins: Number,
-      total_draws: Number,
-      total_losses: Number
+const user_fantasy = schema({
+  user_id: String,
+  lineup: {
+    type: String,
+    default: '4-3-3'
+  },
+  budget: {
+    type: Number,
+    default: 5000000
+  },
+  team_lineup: {
+    type: Object,
+    default: {
+      defense: [''],
+      midfield: [''],
+      attack: [''],
+      bench: [''],
+      dt: ['']
     }
-  ]
+  }
 });
+const User = mongoose.model('Users', user_schema);
+const Player = mongoose.model('Players', player_schema);
+const Dt = mongoose.model('Dts', dt_schema);
+const Team = mongoose.model('Teams', team_schema);
+const Venue = mongoose.model('Venues', venue_schema);
+const Standing = mongoose.model('Standings', standings_schema);
 
-const player_schema = schema({
-  id: String,
-  name: String,
-  age: Number,
-  position: String,
-  photo: String,
-  team: team_schema
-});
-
-const dt_schema = schema({
-  id: String,
-  name: String,
-  age: Number,
-  nationality: String,
-  photo: String
-});
-const team_schema = schema({
-  id: String,
-  name: String,
-  foundation: Number,
-  logo: String,
-  venue: venue_schema
-});
-
-const venue_schema = schema({
-  id: String,
-  name: String,
-  address: String,
-  city: String,
-  capacity: String,
-  image: String
-});
-
-module.exports = mongoose.model('users', user_schema);
-module.exports = mongoose.model('players', player_schema);
-module.exports = mongoose.model('dts', dt_schema);
-module.exports = mongoose.model('teams', team_schema);
-module.exports = mongoose.model('venues', venue_schema);
+export { User, Player, Dt, Team, Venue, Standing };

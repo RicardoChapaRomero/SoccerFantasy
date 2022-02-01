@@ -9,7 +9,7 @@ import Team from './components/team/Team';
 
 function App() {
   const pages = ['team', 'social', 'stats', 'about'];
-  const [isAuth, setIsAuth] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
   if (!isAuth) {
     return <StartPage onAuthChange={(isAuth) => setIsAuth(isAuth)} />;
   }

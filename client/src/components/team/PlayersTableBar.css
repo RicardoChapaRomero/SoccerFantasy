@@ -1,0 +1,15 @@
+#box {
+  width: '50vw';
+  background-color: var(--beige);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 20px 10px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  #box {
+    width: 90vw;
+  }
+}

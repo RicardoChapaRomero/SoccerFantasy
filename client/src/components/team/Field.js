@@ -5,24 +5,21 @@ import Player from './Player';
 
 const Field = (props) => {
   const { formation } = props;
-  console.log(formation);
+  const attackers = [],
+    midfielders = [],
+    defenders = [];
+  for (let i = 0; i < Number.parseInt(formation[4]); i++)
+    attackers.push(<Player key={i} />);
+  for (let i = 0; i < Number.parseInt(formation[2]); i++)
+    midfielders.push(<Player key={i} />);
+  for (let i = 0; i < Number.parseInt(formation[0]); i++)
+    defenders.push(<Player key={i} />);
+
   return (
     <div className="field">
-      <div className="line">
-        {formation[2].map((i, player) => (
-          <Player key={i} />
-        ))}
-      </div>
-      <div className="line">
-        {formation[1].map((i, player) => (
-          <Player key={i} />
-        ))}
-      </div>
-      <div className="line">
-        {formation[0].map((i, player) => (
-          <Player key={i} />
-        ))}
-      </div>
+      <div className="line">{attackers}</div>
+      <div className="line">{midfielders}</div>
+      <div className="line">{defenders}</div>
       <div className="line">
         <Player />
       </div>
@@ -30,13 +27,9 @@ const Field = (props) => {
   );
 };
 Field.propTypes = {
-  formation: PropTypes.array
+  formation: PropTypes.string
 };
 Field.defaultProps = {
-  formation: [
-    [1, 2, 3, 4],
-    [1, 2, 3],
-    [1, 2, 3]
-  ]
+  formation: '4-3-3'
 };
 export default Field;

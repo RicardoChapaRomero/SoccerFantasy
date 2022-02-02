@@ -11,6 +11,26 @@ import {
   Round
 } from '../models/model.js';
 
+const pointsFormat = {
+  minutes: 0.01,
+  shots: 3,
+  goals: {
+    total: 30,
+    conceded: -20,
+    assists: 10,
+    saves: 5
+  },
+  passes: 0.5,
+  tackles: {
+    blocks: 10,
+    interceptions: 10
+  },
+  dribbles: 10,
+  cards: {
+    yellow: -15,
+    red: -30
+  }
+};
 const router = express.Router();
 // Routes
 // Test Route
@@ -200,7 +220,7 @@ router.get('/api/users_fantasy/', async (req, res) => {
 });
 
 router.get('/api/players', async (req, res) => {
-  for (let i = 1; i <= 37; i++) {
+  for (let i = 1; i <= 1; i++) {
     const response = await fetch(
       `https://api-football-v1.p.rapidapi.com/v3/players?league=262&season=2021&page=${i}`,
       {
@@ -224,12 +244,86 @@ router.get('/api/players', async (req, res) => {
         photo: pr.player.photo,
         rating: pr.statistics[0].games.rating,
         team_id: pr.statistics[0].team.id,
-        goals: pr.statistics[0].goals.total
+        goals: pr.statistics[0].goals.total,
+        points: 0
       });
       player.save();
     });
   }
 
+  res.json('success');
+});
+
+router.get('/api/calculatePoints', async (req, res) => {
+  let points_tmp = 0;
+  let x = true;
+  let tmp = 0;
+  Round.find({ status: 'Match Finished' }, async (err, docs) => {
+    docs.forEach(async (round) => {
+      const response = await fetch(
+        `https://api-football-v1.p.rapidapi.com/v3/fixtures/players?fixture=${round.round_id}`,
+        {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY
+          }
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          return data;
+        });
+
+      response.response.forEach(async (team) => {
+        team.players.forEach(async (player) => {
+          points_tmp +=
+            pointsFormat.minutes *
+              player.statistics[0].games.minutes +
+            pointsFormat.shots * player.statistics[0].shots.on +
+            pointsFormat.goals.total *
+              player.statistics[0].goals.total +
+            pointsFormat.goals.conceded *
+              player.statistics[0].goals.conceded +
+            pointsFormat.goals.assists *
+              player.statistics[0].goals.assists +
+            pointsFormat.goals.saves *
+              player.statistics[0].goals.saves +
+            pointsFormat.passes *
+              parseInt(player.statistics[0].passes.accuracy) +
+            pointsFormat.tackles.blocks *
+              player.statistics[0].tackles.blocks +
+            pointsFormat.tackles.interceptions *
+              player.statistics[0].tackles.interceptions +
+            pointsFormat.dribbles *
+              player.statistics[0].dribbles.success +
+            pointsFormat.cards.yellow *
+              player.statistics[0].cards.yellow +
+            pointsFormat.cards.red * player.statistics[0].cards.red;
+          Player.findOneAndUpdate(
+            { player_id: player.player.id },
+            { points: points_tmp },
+            (res) => {
+              //console.log('Updated points');
+            }
+          );
+          console.log(
+            'player id: ',
+            player.player.id,
+            'player name: ',
+            player.player.name,
+            ' Points: ',
+            points_tmp,
+            'player: ',
+            tmp
+          );
+          points_tmp = 0;
+          tmp += 1;
+        });
+      });
+      console.log('players: ', tmp);
+    });
+  });
   res.json('success');
 });
 

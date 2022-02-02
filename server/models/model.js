@@ -26,7 +26,8 @@ const player_schema = schema({
   photo: String,
   rating: String,
   team_id: String,
-  goals: Number
+  goals: Number,
+  points: Number
 });
 
 const standings_schema = schema({
@@ -95,6 +96,7 @@ const rounds_schema = schema({
   goals_home: Number,
   goals_away: Number
 });
+
 const User = mongoose.model('Users', user_schema);
 const Player = mongoose.model('Players', player_schema);
 const Dt = mongoose.model('Dts', dt_schema);

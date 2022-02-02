@@ -1,6 +1,6 @@
 import './Logo.css';
 import PropTypes from 'prop-types';
-import colors from '../colors';
+import colors from '../constants/colors';
 
 function Logo(props) {
   const { size, loader, color } = props;

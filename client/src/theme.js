@@ -23,10 +23,11 @@ const theme = createTheme({
   },
   components: {
     // Name of the component
-    MuiButton: {
+    MuiAppBar: {
       styleOverrides: {
         // Name of the slot
         root: {
+          height: '64px'
           // Some CSS
         }
       }

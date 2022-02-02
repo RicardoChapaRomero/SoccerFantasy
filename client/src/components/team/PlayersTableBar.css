@@ -1,11 +1,12 @@
 #box {
-  width: '50vw';
   background-color: var(--beige);
-  margin-bottom: 20px;
+  margin-bottom: 2vh;
   display: flex;
-  justify-content: space-evenly;
-  padding: 20px 10px;
-  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  align-items: flex-start;
+  padding: 10px 30px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 900px) {

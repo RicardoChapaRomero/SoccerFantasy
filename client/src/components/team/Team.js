@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Team.css';
 import Field from './Field';
 import PlayersTable from './PlayersTable';
@@ -14,11 +14,10 @@ const Team = () => {
       direction={{ xs: 'column', md: 'row' }}
       spacing={{ xs: 5, md: 2 }}
       sx={{
-        padding: '3vh 0'
+        padding: '2vh 0'
       }}
     >
       <Field formation={formation}></Field>
-      <div className="bar"></div>
       <PlayersTable
         formation={formation}
         setFormation={setFormation}

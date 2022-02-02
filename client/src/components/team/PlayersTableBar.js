@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import formations from '../../constants/formations';
 import { positions, getColor } from '../../constants/positions';
 
@@ -10,37 +10,23 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import PropTypes from 'prop-types';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
+import colors from '../../constants/colors';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 150
-    }
-  }
-};
+const ALL_FORMATIONS = 'All';
+
 function MBar(props) {
   const { formation, setFormation } = props;
-  const [positionsFilters, setPositionsFilter] = useState([]);
-
-  const handleChange = (event) => {
-    const {
-      target: { value }
-    } = event;
-    setPositionsFilter(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
+  const [positionFilters, setPositionFilter] =
+    useState(ALL_FORMATIONS);
 
   const formationDropdown = (
-    <Box>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">
+    <Box sx={{ minWidth: 100 }}>
+      <FormControl variant="standard" fullWidth>
+        <InputLabel
+          style={{ fontWeight: 'bold', color: colors.black }}
+          id="demo-simple-select-label"
+        >
           Formation
         </InputLabel>
         <Select
@@ -49,6 +35,9 @@ function MBar(props) {
           value={formation}
           label="Formation"
           onChange={(e) => setFormation(e.target.value)}
+          renderValue={() => (
+            <Box sx={{ padding: '4px 0px 5px 0px' }}>{formation}</Box>
+          )}
         >
           {formations.map((f) => (
             <MenuItem value={f}>{f}</MenuItem>
@@ -57,50 +46,66 @@ function MBar(props) {
       </FormControl>
     </Box>
   );
-
   const positionFilterSelect = (
-    <FormControl sx={{ minWidth: '100px', maxWidth: '300px' }}>
-      <InputLabel id="demo-multiple-chip-label">Position</InputLabel>
-      <Select
-        labelId="demo-multiple-chip-label"
-        id="demo-multiple-chip"
-        multiple
-        value={positionsFilters}
-        onChange={handleChange}
-        input={
-          <OutlinedInput id="select-multiple-chip" label="Chip" />
-        }
-        renderValue={(selected) => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((value) => (
+    <Box sx={{ minWidth: 100 }}>
+      <FormControl variant="standard" fullWidth>
+        <InputLabel
+          style={{ fontWeight: 'bold', color: colors.black }}
+          id="demo-multiple-chip-label"
+        >
+          Position
+        </InputLabel>
+        <Select
+          labelId="demo-multiple-chip-label"
+          id="demo-multiple-chip"
+          onChange={(e) => setPositionFilter(e.target.value)}
+          value={positionFilters}
+          renderValue={() => {
+            if (positionFilters === ALL_FORMATIONS) {
+              return (
+                <Box sx={{ padding: '4px 0px 5px 0px' }}>
+                  {positionFilters}
+                </Box>
+              );
+            }
+            return (
               <Chip
-                key={value}
-                label={value}
-                color={getColor(value)}
+                key={positionFilters}
+                label={positionFilters}
+                color={getColor(positionFilters)}
               />
-            ))}
-          </Box>
-        )}
-        MenuProps={MenuProps}
-      >
-        {positions.map((pos) => (
-          <MenuItem key={pos} value={pos}>
-            {pos}
+            );
+          }}
+        >
+          <MenuItem key={0} value={ALL_FORMATIONS}>
+            {ALL_FORMATIONS}
           </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+          {positions.map((pos) => (
+            <MenuItem key={pos} value={pos}>
+              {pos}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   );
 
   const saveButton = (
-    <Button onClick={() => alert('Saving team')} variant="contained">
+    <Button
+      sx={{ display: 'flex', alignSelf: 'center' }}
+      onClick={() => alert('Saving team')}
+      variant="contained"
+    >
       save team
     </Button>
   );
 
+  const dtDropdown = <div></div>;
+
   return (
     <div id="box">
-      {formationDropdown} {positionFilterSelect} {saveButton}
+      {formationDropdown} {positionFilterSelect}
+      {dtDropdown} {saveButton}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 .field {
-  min-width: 40vw;
-  min-height: 80vh;
+  width: 40vw;
+  height: 80vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -38,6 +38,6 @@
 
 @media (max-width: 900px) {
   .field {
-    min-width: 90vw;
+    width: 90vw;
   }
 }

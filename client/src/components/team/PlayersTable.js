@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '55vw',
     maxHeight: 'calc(94vh - 144px)',
     ['@media (max-width:900px)']: {
-      maxWidth: '90vw'
+      maxWidth: '95vw'
     }
   },
   tableHeaderCell: {

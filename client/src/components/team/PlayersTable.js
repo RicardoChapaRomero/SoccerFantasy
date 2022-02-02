@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,8 +11,11 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TableFooter from '@mui/material/TableFooter';
 import Avatar from '@mui/material/Avatar';
-import colors from '../../colors';
+import colors from '../../constants/colors';
 import Chip from '@mui/material/Chip';
+import PlayersTableBar from './PlayersTableBar';
+import PropTypes from 'prop-types';
+import { getColor } from '../../constants/positions';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -40,27 +42,12 @@ const useStyles = makeStyles((theme) => ({
   name: {
     fontWeight: 'bold',
     color: theme.palette.secondary.dark
-  },
-  status: {
-    fontWeight: 'bold',
-    fontSize: '0.75rem',
-    color: 'white',
-    backgroundColor: 'grey',
-    borderRadius: 8,
-    padding: '3px 10px',
-    display: 'inline-block'
-  },
-  searchBar: {
-    display: 'flex',
-    width: '100%',
-    heigth: '300px',
-    backgroundColor: colors.beige
   }
 }));
 
 const defaultPrice = 1000000,
   defaultPoint = 0;
-const COLUMNS = ['Player', 'Team', 'Price', 'Points'];
+const COLUMNS = ['Player', 'Position', 'Team', 'Price', 'Points'];
 
 const initPlayers = (setPlayers) => {
   let players = [];
@@ -78,21 +65,8 @@ const initPlayers = (setPlayers) => {
   setPlayers(players);
 };
 
-const getColor = (position) => {
-  if (position === 'Goalkeeper') {
-    return 'error';
-  }
-  if (position === 'Defender') {
-    return 'info';
-  }
-  if (position === 'Attacker') {
-    return 'secondary';
-  }
-
-  return 'primary';
-};
-
-function MTable() {
+function MTable(props) {
+  const { formation, setFormation } = props;
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -113,10 +87,11 @@ function MTable() {
   };
 
   return (
-    <TableContainer
-      component={Paper}
-      className={classes.tableContainer}
-    >
+    <TableContainer className={classes.tableContainer}>
+      <PlayersTableBar
+        formation={formation}
+        setFormation={setFormation}
+      ></PlayersTableBar>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -144,24 +119,32 @@ function MTable() {
                         className={classes.avatar}
                       />
                     </Grid>
-                    <Grid item lg={10}>
-                      <Typography ml={1} className={classes.name}>
+                    <Grid item lg={4}>
+                      <Typography className={classes.name}>
                         {row.name}
                       </Typography>
                       <Typography
                         color="textSecondary"
                         variant="body2"
-                        ml={1}
-                        mb={1}
                       >
                         {'Age: ' + row.age}
                       </Typography>
-                      <Chip
-                        color={getColor(row.position)}
-                        label={row.position}
-                      />
+                      {row.goals && (
+                        <Typography
+                          color="textSecondary"
+                          variant="body2"
+                        >
+                          {'Goals: ' + row.goals}
+                        </Typography>
+                      )}
                     </Grid>
                   </Grid>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    color={getColor(row.position)}
+                    label={row.position}
+                  />
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="body2">
@@ -188,5 +171,14 @@ function MTable() {
     </TableContainer>
   );
 }
+
+MTable.propTypes = {
+  setFormation: PropTypes.func,
+  formation: PropTypes.string
+};
+MTable.defaultProps = {
+  setFormation: () => console.log('formation callback default'),
+  formation: '4-3-3'
+};
 
 export default MTable;

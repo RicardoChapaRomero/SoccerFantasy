@@ -2,6 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import './Field.css';
 import Player from './Player';
+import Coach from './Coach';
 
 const Field = (props) => {
   const { formation } = props;
@@ -23,6 +24,7 @@ const Field = (props) => {
       <div className="line">
         <Player />
       </div>
+      <Coach />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const venue_schema = schema({
   venue_id: String,
@@ -26,6 +27,7 @@ const player_schema = schema({
   photo: String,
   rating: String,
   team_id: String,
+  team_object: { type: Schema.Types.ObjectId, ref: 'Teams' },
   goals: Number,
   points: Number
 });
@@ -33,6 +35,7 @@ const player_schema = schema({
 const standings_schema = schema({
   rank: Number,
   team_id: String,
+  team_object: { type: Schema.Types.ObjectId, ref: 'Teams' },
   points: Number,
   goals_diff: Number,
   goals_for: Number,

@@ -1,9 +1,5 @@
 import express from 'express';
-import path from 'path';
 import fetch from 'node-fetch';
-import bcrypt from 'bcrypt';
-import jsonwebtoken from 'jsonwebtoken';
-import { verifyToken } from '../middleware/verifyToken.js';
 import {
   User,
   Player,
@@ -13,14 +9,6 @@ import {
   Standing,
   Round
 } from '../models/model.js';
-
-// Generate Token
-const generateToken = (user_id) => {
-  return jsonwebtoken.sign(
-    { isAdmin: false, userId: user_id },
-    process.env.SECRET,
-    { expiresIn: "1h" });
-}
 
 const pointsFormat = {
   minutes: 0.01,
@@ -42,19 +30,10 @@ const pointsFormat = {
     red: -30
   }
 };
-const router = express.Router();
-// Routes
-// Test Route
-router.get('/api', async (req, res) => {
-  console.log('here');
-  res.json({ message: 'Hello from server!' });
-});
 
-// router.post('/api/players', (req,res) => {
-//   const player = new Player(req.body);
-// })
+const rapidapi_router = express.Router();
 
-router.get('/api/teams', async (req, res) => {
+rapidapi_router.get('/api/teams', async (req, res) => {
   const response = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/teams?league=262&season=2021',
     {
@@ -83,7 +62,7 @@ router.get('/api/teams', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/venues', async (req, res) => {
+rapidapi_router.get('/api/venues', async (req, res) => {
   const response = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/teams?league=262&season=2021',
     {
@@ -113,7 +92,7 @@ router.get('/api/venues', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/standings', async (req, res) => {
+rapidapi_router.get('/api/standings', async (req, res) => {
   const response = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/standings?league=262&season=2021',
     {
@@ -146,7 +125,7 @@ router.get('/api/standings', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/fixtures/back', async (req, res) => {
+rapidapi_router.get('/api/fixtures/back', async (req, res) => {
   const response_back = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=262&season=2021&timezone=America/Mexico_City&last=9',
     {
@@ -180,7 +159,7 @@ router.get('/api/fixtures/back', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/fixtures/front', async (req, res) => {
+rapidapi_router.get('/api/fixtures/front', async (req, res) => {
   const response_back = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=262&season=2021&timezone=America/Mexico_City&next=9',
     {
@@ -213,7 +192,7 @@ router.get('/api/fixtures/front', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/users_fantasy/', async (req, res) => {
+rapidapi_router.get('/api/users_fantasy/', async (req, res) => {
   const user_tmp = new User({
     lineup: '4-3-3',
     budget: 5000000,
@@ -230,7 +209,7 @@ router.get('/api/users_fantasy/', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/players', async (req, res) => {
+rapidapi_router.get('/api/players', async (req, res) => {
   for (let i = 1; i <= 1; i++) {
     const response = await fetch(
       `https://api-football-v1.p.rapidapi.com/v3/players?league=262&season=2021&page=${i}`,
@@ -265,7 +244,7 @@ router.get('/api/players', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/calculatePoints', async (req, res) => {
+rapidapi_router.get('/api/calculatePoints', async (req, res) => {
   let points_tmp = 0;
   let x = true;
   let tmp = 0;
@@ -338,101 +317,4 @@ router.get('/api/calculatePoints', async (req, res) => {
   res.json('success');
 });
 
-/** Login Route
- *  req.query:
- * {
- *  method: 'form' / 'google'
- *  email: email,
- *  password: password
- * }
- */
-router.get('/login', async (req, res) => {
-  const query = req.query;
-
-  // As Google users don't need to register with their password,
-  // we just need to lookup their email to see if they're
-  // registered
-  let user_is_registered = false;
-  const user_DB = await User.findOne({ email: query.email });
-
-  if (user_DB !== null) {
-    if (query.method === 'form') {
-      user_is_registered =
-        (query.email === user_DB.email &&
-          bcrypt.compareSync(query.password, user_DB.password));
-    } else {
-      user_is_registered = (query.email === user_DB.email);
-    }
-  }
-
-  let response = { userIsRegistered: user_is_registered };
-  if (user_is_registered) {
-    response.sessionToken = generateToken(user_DB._id);
-  }
-
-  res.json({ message: response });
-});
-
-/** Login Route
- *  req.body:
- * {
- *  email: 'email',
- *  password: 'password',
- *  name: 'name',
- *  teamName: 'team'
- * }
- */
-router.post('/register', async (req, res) => {
-  // Return early if user is already registered
-  if ((await User.findOne({ email: req.body.email })) !== null) {
-    res.json({
-      message: { alreadyRegistered: true, registered: true }
-    });
-    return;
-  }
-
-  const salt = bcrypt.genSaltSync(12);
-  req.body.password = bcrypt.hashSync(req.body.password, salt);
-
-  // Push new user to DB
-  const new_user = new User(req.body);
-  await new_user.save();
-  res.json({
-    message: { alreadyRegistered: false, registered: true }
-  });
-});
-
-// Verify Token Handler
-router.get('/verifyToken', verifyToken, (req, res) => {
-  res.json({
-    message: { userId: req.userId }
-  });
-});
-
-/** Verify User Route
- * 
- * req.query:
- * {
- *  userId: id
- * }
- * */
-router.get('/verifyUser', async (req, res) => {
-  const user = await User.findById({_id: req.query.userId});
-
-  res.json({
-    message: { userIsRegistered: (user !== null) }
-  });
-});
-
-
-// All other GET requests not handled before will return our React app
-//
-// Leave this route after all defined routes and middleware
-const __dirname = path.resolve();
-router.get('*', (req, res) => {
-  res.sendFile(
-    path.resolve(__dirname, '../client/build', 'index.html')
-  );
-});
-
-export { router };
+export { rapidapi_router };

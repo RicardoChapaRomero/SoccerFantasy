@@ -4,7 +4,8 @@ import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookie_parser from 'cookie-parser';
-import { router } from './routes/routes.js';
+import { user_router } from './routes/userRoutes.js';
+import { rapidapi_router } from './routes/rapidApiRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -27,7 +28,8 @@ app.use(cookie_parser());
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // routes
-app.use('/', router);
+app.use('/', user_router);
+app.use('/', rapidapi_router);
 
 // Listener
 app.listen(PORT, () => {

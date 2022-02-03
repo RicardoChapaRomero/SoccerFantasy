@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cookie_parser from 'cookie-parser';
 import { router } from './routes/routes.js';
 
 dotenv.config();
@@ -21,6 +22,7 @@ mongoose
 
 app.set('port', PORT);
 app.use(express.json());
+app.use(cookie_parser());
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 

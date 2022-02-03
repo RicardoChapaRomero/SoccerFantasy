@@ -35,9 +35,11 @@ export async function googleAuthOnSuccess(response) {
   const userProfile = response.profileObj;
   const userData = {
     method: 'google',
-    email: userProfile.email,
+    email: userProfile.email.toLowerCase(),
     name: userProfile.name
   };
+
+  console.log(userData);
 
  const res =  await doFetch('/login', 'GET', userData);
  return res.userIsRegistered;
@@ -61,7 +63,7 @@ export function googleAuthOnFailure(response) {
 export async function formAuth(email, password) {
   const userData = {
     method: 'form',
-    email: email,
+    email: email.toLowerCase(),
     password: password
   };
 
@@ -82,7 +84,7 @@ export async function formAuth(email, password) {
  * */
 export async function formRegister(email, password, teamName, name) {
   const userData = {
-    email: email,
+    email: email.toLowerCase(),
     password: password,
     name: name,
     teamName: teamName

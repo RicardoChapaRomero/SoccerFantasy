@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import fetch from 'node-fetch';
+import bcrypt from 'bcrypt';
 import {
   User,
   Player,
@@ -346,8 +347,23 @@ router.get('/login', async (req, res) => {
   if (query.method === 'form') {
     user_filter.password = query.password;
   }
-
+  console.log(req.query)
   const user_is_registered = await User.findOne(user_filter);
+
+  /**
+   * 
+   *   const user_is_registered = await User.findOne(user_filter, (err, user) => {
+    if (err) {
+      return null;
+    } else {
+      console.log(user)
+      return query.method === 'form' ? 
+        bcrypt.compareSync(query.password, user.password) : 
+        true; 
+    }
+  });
+   */
+
   res.json({
     message: { userIsRegistered: !(user_is_registered === null) }
   });
@@ -371,6 +387,9 @@ router.post('/register', async (req, res) => {
     return;
   }
 
+  const salt = bcrypt.genSaltSync(12);
+  req.body.password = bcrypt.hashSync(req.body.password, salt);
+
   // Push new user to DB
   const new_user = new User(req.body);
   await new_user.save();
@@ -382,6 +401,7 @@ router.post('/register', async (req, res) => {
 // All other GET requests not handled before will return our React app
 //
 // Leave this route after all defined routes and middleware
+const __dirname = path.resolve();
 router.get('*', (req, res) => {
   res.sendFile(
     path.resolve(__dirname, '../client/build', 'index.html')

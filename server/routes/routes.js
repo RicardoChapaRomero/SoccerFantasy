@@ -382,10 +382,11 @@ router.post('/register', async (req, res) => {
 // All other GET requests not handled before will return our React app
 //
 // Leave this route after all defined routes and middleware
+/*
 router.get('*', (req, res) => {
   res.sendFile(
     path.resolve(__dirname, '../client/build', 'index.html')
   );
 });
-
+*/
 export { router };

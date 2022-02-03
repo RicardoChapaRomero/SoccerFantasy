@@ -22,4 +22,15 @@ routerTest.get('/standing', async (req, res) => {
   }
 });
 
+routerTest.get('/player', async (req, res) => {
+  for await (const player of Player.find({})) {
+    const team = await Team.findOne({
+      team_id: player.team_id
+    });
+    player.team_object = team._id;
+    await player.save();
+  }
+  res.json({ success: 'TATAKAE' });
+});
+
 export { routerTest };

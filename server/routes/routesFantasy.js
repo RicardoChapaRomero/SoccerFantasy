@@ -36,4 +36,32 @@ routerFantasy.get('/standing', async (req, res) => {
       res.json(standing);
     });
 });
+
+/* 
+req.query : {
+  pageRows : number,
+  page : number (index),
+  position: 'All' | 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Attacker'
+}
+*/
+
+routerFantasy.get('/player', async (req, res) => {
+  const pageRows = req.query.pageRows;
+  const page = req.query.page;
+  const position = req.query.position;
+  const query = position === 'All' ? {} : { position: position };
+  Player.find(query, { strict: false })
+    .populate({ path: 'team_object', model: Team })
+    .limit(pageRows)
+    .skip(pageRows * page)
+    .exec(function (err, players) {
+      if (err) {
+        console.log(err);
+        res.json(err);
+        return;
+      }
+      console.log(players);
+      res.json(players);
+    });
+});
 export { routerFantasy };

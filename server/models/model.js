@@ -27,6 +27,7 @@ const player_schema = schema({
   photo: String,
   rating: String,
   team_id: String,
+  team_object: { type: Schema.Types.ObjectId, ref: 'Teams' },
   goals: Number,
   points: Number
 });

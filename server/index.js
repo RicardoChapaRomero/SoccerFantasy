@@ -4,6 +4,7 @@ import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { router } from './routes/routes.js';
+import { routerFantasy } from './routes/routesFantasy.js';
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // routes
+app.use('/fantasy', routerFantasy);
 app.use('/', router);
 
 // Listener

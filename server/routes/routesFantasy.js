@@ -15,29 +15,25 @@ const routerFantasy = express.Router();
 routerFantasy.get('/dt', async (req, res) => {
   Dt.find({})
     .then((docs) => {
-      res.json({ docs: docs });
-    })
-    .catch((err) => {
-      res.json({ docs: [], err: err });
-    });
-});
-
-const fetchStanding = async () => {
-  const response = await Standing.find({});
-  return await response.json();
-};
-
-routerFantasy.get('/standing', async (req, res) => {
-  Standing.find({})
-    .then((docs) => {
-      const comp = (a, b) => {
-        return a.rank < b.rank ? -1 : 1;
-      };
-      const sortedTeams = docs.sort(comp);
-      res.json(sortedTeams);
+      res.json(docs);
     })
     .catch((err) => {
       res.json(err);
+    });
+});
+
+routerFantasy.get('/standing', async (req, res) => {
+  Standing.find({}, { strict: false })
+    .populate({ path: 'team_object', model: Team })
+    .sort({ rank: 1 })
+    .exec(function (err, standing) {
+      if (err) {
+        console.log(err);
+        res.json(err);
+        return;
+      }
+      console.log(standing);
+      res.json(standing);
     });
 });
 export { routerFantasy };

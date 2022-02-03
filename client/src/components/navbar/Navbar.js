@@ -38,6 +38,7 @@ const ResponsiveAppBar = (props) => {
   };
 
   const handleLogoutEvent = (googleLogoutCallback) => {
+    document.cookie = `token= ; path=/`; // eliminate token
     handleCloseUserMenu();
     googleLogoutCallback();
   };

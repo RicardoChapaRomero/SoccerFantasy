@@ -10,7 +10,7 @@ function StartPage(props) {
   const Form = isLoginForm ? (
     <LoginForm onAuthChange={onAuthChange} onChange={() => setIsLoginForm(false)} />
   ) : (
-    <RegisterForm onAuthChange={onAuthChange} onChange={() => setIsLoginForm(true)} />
+    <RegisterForm onChange={() => setIsLoginForm(true)} />
   );
 
   return (

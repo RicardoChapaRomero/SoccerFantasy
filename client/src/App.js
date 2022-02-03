@@ -1,15 +1,31 @@
 // client/src/App.js
 
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/navbar/Navbar';
 import { Routes, Route } from 'react-router-dom';
 import StartPage from './components/start/StartPage';
 import Team from './components/team/Team';
+import { verifyUserToken, verifyUser } from './scripts/apiScripts';
 
 function App() {
   const pages = ['team', 'social', 'stats', 'about'];
   const [isAuth, setIsAuth] = useState(false);
+  useEffect(() => {
+    // Authenticate the user if their session token is still valid
+    const verifyToken = async () => {
+      const token_res = await verifyUserToken(document.cookie);
+      if (token_res.userId) {
+        const user_res = await verifyUser(token_res.userId);
+        setIsAuth(user_res.userIsRegistered);
+      } else {
+        setIsAuth(false);
+      }
+    };
+
+    verifyToken();
+  }, []);
+  
   if (!isAuth) {
     return <StartPage onAuthChange={(isAuth) => setIsAuth(isAuth)} />;
   }

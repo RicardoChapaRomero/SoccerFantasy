@@ -39,10 +39,7 @@ export async function googleAuthOnSuccess(response) {
     name: userProfile.name
   };
 
-  console.log(userData);
-
- const res =  await doFetch('/login', 'GET', userData);
- return res.userIsRegistered;
+  return await doFetch('/login', 'GET', userData);
 }
 
 export function googleAuthOnFailure(response) {
@@ -67,8 +64,7 @@ export async function formAuth(email, password) {
     password: password
   };
 
-  const res = await doFetch('/login', 'GET', userData);
-  return res.userIsRegistered;
+  return await doFetch('/login', 'GET', userData);
 }
 
 /** Register Form Handler
@@ -92,4 +88,30 @@ export async function formRegister(email, password, teamName, name) {
 
   const res = await doFetch('/register', 'POST', userData);
   return res;
+}
+
+/** Verify Token Handler
+ * 
+ * doFetch returns:
+ * {
+ *  message: { 
+ *    userId: id
+ *  }
+ * }
+ * */ 
+ export async function verifyUserToken(token) {
+  return await doFetch('/verifyToken', 'GET', { token: token });
+}
+
+/** Verify Token Handler
+ * 
+ * doFetch returns:
+ * {
+ *  message: { 
+ *    userIsRegistered: true/false
+ *  }
+ * }
+ * */ 
+export async function verifyUser(id) {
+  return await doFetch('/verifyUser', 'GET', { userId: id });
 }

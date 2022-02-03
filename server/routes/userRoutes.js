@@ -1,6 +1,9 @@
 import express from 'express';
 import path from 'path';
 import fetch from 'node-fetch';
+import bcrypt from 'bcrypt';
+import jsonwebtoken from 'jsonwebtoken';
+import { verifyToken } from '../middleware/verifyToken.js';
 import {
   User,
   Player,
@@ -10,6 +13,14 @@ import {
   Standing,
   Round
 } from '../models/model.js';
+
+// Generate Token
+const generateToken = (user_id) => {
+  return jsonwebtoken.sign(
+    { isAdmin: false, userId: user_id },
+    process.env.SECRET,
+    { expiresIn: "1h" });
+}
 
 const pointsFormat = {
   minutes: 0.01,
@@ -31,19 +42,19 @@ const pointsFormat = {
     red: -30
   }
 };
-const router = express.Router();
+const user_router = express.Router();
 // Routes
 // Test Route
-router.get('/api', async (req, res) => {
+user_router.get('/api', async (req, res) => {
   console.log('here');
   res.json({ message: 'Hello from server!' });
 });
 
-// router.post('/api/players', (req,res) => {
+// user_router.post('/api/players', (req,res) => {
 //   const player = new Player(req.body);
 // })
 
-router.get('/api/teams', async (req, res) => {
+user_router.get('/api/teams', async (req, res) => {
   const response = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/teams?league=262&season=2021',
     {
@@ -72,7 +83,7 @@ router.get('/api/teams', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/venues', async (req, res) => {
+user_router.get('/api/venues', async (req, res) => {
   const response = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/teams?league=262&season=2021',
     {
@@ -102,7 +113,7 @@ router.get('/api/venues', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/standings', async (req, res) => {
+user_router.get('/api/standings', async (req, res) => {
   const response = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/standings?league=262&season=2021',
     {
@@ -135,7 +146,7 @@ router.get('/api/standings', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/fixtures/back', async (req, res) => {
+user_router.get('/api/fixtures/back', async (req, res) => {
   const response_back = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=262&season=2021&timezone=America/Mexico_City&last=9',
     {
@@ -169,7 +180,7 @@ router.get('/api/fixtures/back', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/fixtures/front', async (req, res) => {
+user_router.get('/api/fixtures/front', async (req, res) => {
   const response_back = await fetch(
     'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=262&season=2021&timezone=America/Mexico_City&next=9',
     {
@@ -202,7 +213,7 @@ router.get('/api/fixtures/front', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/users_fantasy/', async (req, res) => {
+user_router.get('/api/users_fantasy/', async (req, res) => {
   const user_tmp = new User({
     lineup: '4-3-3',
     budget: 5000000,
@@ -219,7 +230,7 @@ router.get('/api/users_fantasy/', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/players', async (req, res) => {
+user_router.get('/api/players', async (req, res) => {
   for (let i = 1; i <= 1; i++) {
     const response = await fetch(
       `https://api-football-v1.p.rapidapi.com/v3/players?league=262&season=2021&page=${i}`,
@@ -254,7 +265,7 @@ router.get('/api/players', async (req, res) => {
   res.json('success');
 });
 
-router.get('/api/calculatePoints', async (req, res) => {
+user_router.get('/api/calculatePoints', async (req, res) => {
   let points_tmp = 0;
   let x = true;
   let tmp = 0;
@@ -279,26 +290,26 @@ router.get('/api/calculatePoints', async (req, res) => {
         team.players.forEach(async (player) => {
           points_tmp +=
             pointsFormat.minutes *
-              player.statistics[0].games.minutes +
+            player.statistics[0].games.minutes +
             pointsFormat.shots * player.statistics[0].shots.on +
             pointsFormat.goals.total *
-              player.statistics[0].goals.total +
+            player.statistics[0].goals.total +
             pointsFormat.goals.conceded *
-              player.statistics[0].goals.conceded +
+            player.statistics[0].goals.conceded +
             pointsFormat.goals.assists *
-              player.statistics[0].goals.assists +
+            player.statistics[0].goals.assists +
             pointsFormat.goals.saves *
-              player.statistics[0].goals.saves +
+            player.statistics[0].goals.saves +
             pointsFormat.passes *
-              parseInt(player.statistics[0].passes.accuracy) +
+            parseInt(player.statistics[0].passes.accuracy) +
             pointsFormat.tackles.blocks *
-              player.statistics[0].tackles.blocks +
+            player.statistics[0].tackles.blocks +
             pointsFormat.tackles.interceptions *
-              player.statistics[0].tackles.interceptions +
+            player.statistics[0].tackles.interceptions +
             pointsFormat.dribbles *
-              player.statistics[0].dribbles.success +
+            player.statistics[0].dribbles.success +
             pointsFormat.cards.yellow *
-              player.statistics[0].cards.yellow +
+            player.statistics[0].cards.yellow +
             pointsFormat.cards.red * player.statistics[0].cards.red;
           Player.findOneAndUpdate(
             { player_id: player.player.id },
@@ -335,22 +346,31 @@ router.get('/api/calculatePoints', async (req, res) => {
  *  password: password
  * }
  */
-router.get('/login', async (req, res) => {
+user_router.get('/login', async (req, res) => {
   const query = req.query;
 
   // As Google users don't need to register with their password,
   // we just need to lookup their email to see if they're
   // registered
+  let user_is_registered = false;
+  const user_DB = await User.findOne({ email: query.email });
 
-  let user_filter = { email: query.email };
-  if (query.method === 'form') {
-    user_filter.password = query.password;
+  if (user_DB !== null) {
+    if (query.method === 'form') {
+      user_is_registered =
+        (query.email === user_DB.email &&
+          bcrypt.compareSync(query.password, user_DB.password));
+    } else {
+      user_is_registered = (query.email === user_DB.email);
+    }
   }
 
-  const user_is_registered = await User.findOne(user_filter);
-  res.json({
-    message: { userIsRegistered: !(user_is_registered === null) }
-  });
+  let response = { userIsRegistered: user_is_registered };
+  if (user_is_registered) {
+    response.sessionToken = generateToken(user_DB._id);
+  }
+
+  res.json({ message: response });
 });
 
 /** Login Route
@@ -362,7 +382,7 @@ router.get('/login', async (req, res) => {
  *  teamName: 'team'
  * }
  */
-router.post('/register', async (req, res) => {
+user_router.post('/register', async (req, res) => {
   // Return early if user is already registered
   if ((await User.findOne({ email: req.body.email })) !== null) {
     res.json({
@@ -370,6 +390,9 @@ router.post('/register', async (req, res) => {
     });
     return;
   }
+
+  const salt = bcrypt.genSaltSync(12);
+  req.body.password = bcrypt.hashSync(req.body.password, salt);
 
   // Push new user to DB
   const new_user = new User(req.body);
@@ -379,13 +402,37 @@ router.post('/register', async (req, res) => {
   });
 });
 
+// Verify Token Handler
+user_router.get('/verifyToken', verifyToken, (req, res) => {
+  res.json({
+    message: { userId: req.userId }
+  });
+});
+
+/** Verify User Route
+ * 
+ * req.query:
+ * {
+ *  userId: id
+ * }
+ * */
+user_router.get('/verifyUser', async (req, res) => {
+  const user = await User.findById({_id: req.query.userId});
+
+  res.json({
+    message: { userIsRegistered: (user !== null) }
+  });
+});
+
+
 // All other GET requests not handled before will return our React app
 //
 // Leave this route after all defined routes and middleware
-router.get('*', (req, res) => {
+/*const __dirname = path.resolve();
+user_router.get('*', (req, res) => {
   res.sendFile(
     path.resolve(__dirname, '../client/build', 'index.html')
   );
-});
+});*/
 
-export { router };
+export { user_router };

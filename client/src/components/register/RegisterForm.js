@@ -13,7 +13,7 @@ import { validateEmail } from '../../utils';
 import { formRegister } from '../../scripts/apiScripts';
 
 function RegisterForm(props) {
-  const { email, password, name, teamName, onChange, onAuthChange } =
+  const { email, password, name, teamName, onChange } =
     props;
   const [values, setValues] = useState({
     email: email,
@@ -53,7 +53,7 @@ function RegisterForm(props) {
     if (res.alreadyRegistered) {
       alert('User already exists');
     } else {
-      onAuthChange(res.registered);
+      onChange();
     }
   };
 

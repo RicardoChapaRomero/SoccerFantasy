@@ -16,6 +16,7 @@ import {
   formAuth
 } from '../../scripts/apiScripts';
 import GoogleIcon from '@mui/icons-material/Google';
+
 function LoginForm(props) {
   const { email, password, onChange, onAuthChange } = props;
   const [values, setValues] = useState({
@@ -35,21 +36,36 @@ function LoginForm(props) {
         ...errors,
         ['email']:
           event.target.value !== '' &&
-          validateEmail(event.target.value)
+            validateEmail(event.target.value)
             ? ''
             : 'Invalid email'
       });
     }
   };
 
+  const setSessionToken = (token) => {
+    document.cookie = `token=${token}; path=/`;
+  }
+
   const handleLogin = async () => {
-    const isAuth = await formAuth(values.email, values.password);
-    onAuthChange(isAuth);
+    const response =
+      await formAuth(values.email, values.password);
+    if (response.userIsRegistered) {
+      setSessionToken(response.sessionToken);
+      onAuthChange(true);
+    } else {
+      onChange();
+    }
   };
 
-  const handleGoogleOnSuccess = async (response) => {
-    const isAuth = await googleAuthOnSuccess(response);
-    onAuthChange(isAuth);
+  const handleGoogleOnSuccess = async (google_response) => {
+    const response = await googleAuthOnSuccess(google_response);
+    if (response.userIsRegistered) {
+      setSessionToken(response.sessionToken);
+      onAuthChange(true);
+    } else {
+      onChange();
+    }
   };
 
   return (

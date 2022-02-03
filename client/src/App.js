@@ -6,7 +6,7 @@ import Navbar from './components/navbar/Navbar';
 import { Routes, Route } from 'react-router-dom';
 import StartPage from './components/start/StartPage';
 import Team from './components/team/Team';
-<<<<<<< HEAD
+import Stats from './components/stats/Stats';
 import { verifyUserToken, verifyUser } from './scripts/apiScripts';
 
 function App() {
@@ -27,13 +27,6 @@ function App() {
     verifyToken();
   }, []);
   
-=======
-import Stats from './components/stats/Stats';
-
-function App() {
-  const pages = ['team', 'social', 'stats', 'about'];
-  const [isAuth, setIsAuth] = useState(true);
->>>>>>> becfa14e56e482ef7c04efe4b1f15903cb69922d
   if (!isAuth) {
     return <StartPage onAuthChange={(isAuth) => setIsAuth(isAuth)} />;
   }

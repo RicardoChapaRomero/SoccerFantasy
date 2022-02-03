@@ -16,9 +16,7 @@ import colors from '../../constants/colors';
 const ALL_FORMATIONS = 'All';
 
 function MBar(props) {
-  const { formation, setFormation } = props;
-  const [positionFilters, setPositionFilter] =
-    useState(ALL_FORMATIONS);
+  const { formation, setFormation, position, setPosition } = props;
 
   const formationDropdown = (
     <Box sx={{ minWidth: 100 }}>
@@ -46,7 +44,7 @@ function MBar(props) {
       </FormControl>
     </Box>
   );
-  const positionFilterSelect = (
+  const positionSelect = (
     <Box sx={{ minWidth: 100 }}>
       <FormControl variant="standard" fullWidth>
         <InputLabel
@@ -58,21 +56,21 @@ function MBar(props) {
         <Select
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
-          onChange={(e) => setPositionFilter(e.target.value)}
-          value={positionFilters}
+          onChange={(e) => setPosition(e.target.value)}
+          value={position}
           renderValue={() => {
-            if (positionFilters === ALL_FORMATIONS) {
+            if (position === ALL_FORMATIONS) {
               return (
                 <Box sx={{ padding: '4px 0px 5px 0px' }}>
-                  {positionFilters}
+                  {position}
                 </Box>
               );
             }
             return (
               <Chip
-                key={positionFilters}
-                label={positionFilters}
-                color={getColor(positionFilters)}
+                key={position}
+                label={position}
+                color={getColor(position)}
               />
             );
           }}
@@ -104,7 +102,7 @@ function MBar(props) {
 
   return (
     <div id="box">
-      {formationDropdown} {positionFilterSelect}
+      {formationDropdown} {positionSelect}
       {dtDropdown} {saveButton}
     </div>
   );
@@ -112,11 +110,15 @@ function MBar(props) {
 
 MBar.propTypes = {
   setFormation: PropTypes.func,
-  formation: PropTypes.string
+  formation: PropTypes.string,
+  setPosition: PropTypes.func,
+  position: PropTypes.string
 };
 MBar.defaultProps = {
   setFormation: () => console.log('formation callback default'),
-  formation: '4-3-3'
+  formation: '4-3-3',
+  setPosition: () => console.log('position callback default'),
+  position: ALL_FORMATIONS
 };
 
 export default MBar;

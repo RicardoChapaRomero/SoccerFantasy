@@ -27,8 +27,10 @@ const useStyles = makeStyles((theme) => ({
     color: colors.black
   },
   avatar: {
-    width: 50,
-    height: 50
+    width: 25,
+    height: 25,
+    marginLeft: 5,
+    marginRight: 5
   },
   name: {
     fontWeight: 'bold',
@@ -87,7 +89,7 @@ function Standings(props) {
     return (
       <>
         <Logo size={200} loader={true} />
-        <h2>Loading... </h2>
+        <h2 style={{ color: colors.darkGray }}>Loading... </h2>
       </>
     );
   }

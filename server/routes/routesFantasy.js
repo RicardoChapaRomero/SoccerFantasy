@@ -51,16 +51,15 @@ routerFantasy.get('/player', async (req, res) => {
   const position = req.query.position;
   const query = position === 'All' ? {} : { position: position };
   Player.find(query, { strict: false })
-    .populate({ path: 'team_object', model: Team })
+    .skip(Number(parseInt(pageRows) * parseInt(page)))
     .limit(pageRows)
-    .skip(pageRows * page)
+    .populate({ path: 'team_object', model: Team })
     .exec(function (err, players) {
       if (err) {
         console.log(err);
         res.json(err);
         return;
       }
-      console.log(players);
       res.json(players);
     });
 });

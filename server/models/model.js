@@ -102,6 +102,8 @@ const rounds_schema = schema({
   status: String,
   home_team_id: Number,
   away_team_id: Number,
+  home_team_object: { type: Schema.Types.ObjectId, ref: 'Teams' },
+  away_team_object: { type: Schema.Types.ObjectId, ref: 'Teams' },
   goals_home: Number,
   goals_away: Number
 });

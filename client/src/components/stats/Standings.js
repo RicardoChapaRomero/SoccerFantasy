@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeaderCell: {
     fontWeight: 'bold',
-    backgroundColor: colors.beige,
-    color: colors.black
+    backgroundColor: colors.darkGray,
+    color: colors.white
   },
   avatar: {
     width: 25,
@@ -110,8 +110,18 @@ function Standings(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {teams.map((row) => (
-            <TableRow key={row.team_id}>
+          {teams.map((row, i) => (
+            <TableRow
+              key={row.team_id}
+              sx={{
+                backgroundColor:
+                  i < 4
+                    ? colors.beigeTwo
+                    : i < 12
+                    ? colors.beige
+                    : colors.white
+              }}
+            >
               <TableCell>
                 <Grid container>
                   <Grid item lg={1}>
@@ -127,9 +137,7 @@ function Standings(props) {
                     />
                   </Grid>
                   <Grid item lg={4}>
-                    <Typography className={classes.name}>
-                      {row.team_object.name}
-                    </Typography>
+                    <Typography>{row.team_object.name}</Typography>
                   </Grid>
                 </Grid>
               </TableCell>

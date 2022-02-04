@@ -4,6 +4,7 @@ const colors = {
   yellow: '#ffcc1d',
   hoverYellow: '#ffc40080',
   beige: '#e8e8cc',
+  beigeTwo: '#E8E8B5',
   black: '#000000',
   white: '#ffffff',
   red: '#ff003c',

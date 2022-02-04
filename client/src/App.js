@@ -41,7 +41,6 @@ function App() {
         {' '}
       </Navbar>
       <Routes>
-        <Route path="/" element={<h1> home</h1>} />
         <Route path="/team" element={<Team />} />
         <Route path="/social" element={<Social />} />
         <Route path="/stats" element={<Stats />} />

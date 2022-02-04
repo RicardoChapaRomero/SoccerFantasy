@@ -44,7 +44,7 @@ const ResponsiveAppBar = (props) => {
   };
 
   const LogoC = (
-    <Link to="/" style={{ textDecoration: 'none' }}>
+    <Link to="/team" style={{ textDecoration: 'none' }}>
       <Logo size="50px" color={colors.beige}></Logo>
     </Link>
   );

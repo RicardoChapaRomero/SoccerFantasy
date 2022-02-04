@@ -31,14 +31,14 @@ user_router.get('/login', async (req, res) => {
   // registered
   let user_is_registered = false;
   const user_DB = await User.findOne({ email: query.email });
-
+  console.log(user_DB);
   if (user_DB !== null) {
     if (query.method === 'form') {
       user_is_registered =
-        (query.email === user_DB.email &&
-          bcrypt.compareSync(query.password, user_DB.password));
+        query.email === user_DB.email &&
+        bcrypt.compareSync(query.password, user_DB.password);
     } else {
-      user_is_registered = (query.email === user_DB.email);
+      user_is_registered = query.email === user_DB.email;
     }
   }
 
@@ -87,20 +87,19 @@ user_router.get('/verifyToken', verifyToken, (req, res) => {
 });
 
 /** Verify User Route
- * 
+ *
  * req.query:
  * {
  *  userId: id
  * }
  * */
 user_router.get('/verifyUser', async (req, res) => {
-  const user = await User.findById({_id: req.query.userId});
+  const user = await User.findById({ _id: req.query.userId });
 
   res.json({
-    message: { userIsRegistered: (user !== null) }
+    message: { userIsRegistered: user !== null }
   });
 });
-
 
 // All other GET requests not handled before will return our React app
 //

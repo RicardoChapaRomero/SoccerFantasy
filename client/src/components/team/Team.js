@@ -10,8 +10,14 @@ const Team = () => {
     Goalkeeper: [],
     Defender: [],
     Midfielder: [],
-    Attacker: []
+    Attacker: [],
+    Dt: { id: -1, name: '', photo: '' }
   });
+
+  const handleDTChange = (coach) => {
+    const stateCopy = selected_players;
+    setSelectedPlayers({ ...stateCopy, Dt: coach });
+  };
 
   return (
     <Stack
@@ -23,12 +29,18 @@ const Team = () => {
         padding: '2vh 0'
       }}
     >
-      <Field formation={formation} selected_players={selected_players}></Field>
+      <Field
+        formation={formation}
+        selected_players={selected_players}
+        setSelectedDT={handleDTChange}
+      ></Field>
       <PlayersTable
         formation={formation}
         setFormation={setFormation}
         selected_players={selected_players}
-        setSelectedPlayers={(selected_players) => setSelectedPlayers(selected_players)}
+        setSelectedPlayers={(selected_players) =>
+          setSelectedPlayers(selected_players)
+        }
       ></PlayersTable>
     </Stack>
   );

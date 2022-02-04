@@ -33,4 +33,15 @@ routerTest.get('/player', async (req, res) => {
   res.json({ success: 'TATAKAE' });
 });
 
+routerTest.get('/dt', async (req, res) => {
+  for await (const dt of Dt.find({}, { strict: false })) {
+    const team = await Team.findOne({
+      team_id: dt.team_id
+    });
+    dt.team_object = team._id;
+    await dt.save();
+  }
+  res.json({ success: 'TATAKAE' });
+});
+
 export { routerTest };

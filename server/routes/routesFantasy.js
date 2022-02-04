@@ -15,11 +15,14 @@ const routerFantasy = express.Router();
 
 routerFantasy.get('/dt', async (req, res) => {
   Dt.find({})
-    .then((docs) => {
-      res.json(docs);
-    })
-    .catch((err) => {
-      res.json(err);
+    .populate({ path: 'team_object', model: Team })
+    .exec(function (err, dts) {
+      if (err) {
+        console.log(err);
+        res.json(err);
+        return;
+      }
+      res.json(dts);
     });
 });
 
@@ -84,8 +87,11 @@ routerFantasy.get('/players', async (req, res) => {
 routerFantasy.post('/saveFantasy/:id', async (req, res) => {
   const user_id = req.params.id;
 
-  let attackers = [], defenders = [], midfielders = [],
-    bench = [], dt = [];
+  let attackers = [],
+    defenders = [],
+    midfielders = [],
+    bench = [],
+    dt = [];
   let goalkeeper = '';
 
   const formation = req.body.formation;

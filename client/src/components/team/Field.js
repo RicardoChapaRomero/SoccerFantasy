@@ -4,10 +4,13 @@ import './Field.css';
 import Player from './Player';
 import Coach from './Coach';
 import Button from '@mui/material/Button';
-import { verifyUserToken, saveFantasy } from '../../scripts/apiScripts';
+import {
+  verifyUserToken,
+  saveFantasy
+} from '../../scripts/apiScripts';
 
 const Field = (props) => {
-  const { formation, selected_players } = props;
+  const { formation, selected_players, setSelectedDT } = props;
   const attackers = [],
     midfielders = [],
     defenders = [];
@@ -20,10 +23,10 @@ const Field = (props) => {
           playerPhoto={selected_attackers[i].img}
           playerName={selected_attackers[i].name}
           position={selected_attackers[i].position}
-        />);
+        />
+      );
     } else {
-      attackers.push(
-        <Player key={i} />);
+      attackers.push(<Player key={i} />);
     }
   }
 
@@ -36,10 +39,10 @@ const Field = (props) => {
           playerPhoto={selected_midfielders[i].img}
           playerName={selected_midfielders[i].name}
           position={selected_midfielders[i].position}
-        />);
+        />
+      );
     } else {
-      midfielders.push(
-        <Player key={i} />);
+      midfielders.push(<Player key={i} />);
     }
   }
 
@@ -52,20 +55,20 @@ const Field = (props) => {
           playerPhoto={selected_defenders[i].img}
           playerName={selected_defenders[i].name}
           position={selected_defenders[i].position}
-        />);
+        />
+      );
     } else {
-      defenders.push(
-        <Player key={i} />);
+      defenders.push(<Player key={i} />);
     }
   }
 
   const saveTeam = async () => {
     const token_res = await verifyUserToken(document.cookie);
     console.log(token_res);
-    const fantasy_saved_res = await(saveFantasy(token_res.userId, {
+    const fantasy_saved_res = await saveFantasy(token_res.userId, {
       players: selected_players,
       formation: formation
-    }));
+    });
     console.log('done');
   };
 
@@ -76,14 +79,21 @@ const Field = (props) => {
         <div className="line">{midfielders}</div>
         <div className="line">{defenders}</div>
         <div className="line">
-          { (selected_players.Goalkeeper.length > 0) ? 
-          <Player
-            key={0}
-            playerPhoto={selected_players.Goalkeeper[0].img}
-            playerName={selected_players.Goalkeeper[0].name}
-            position={selected_players.Goalkeeper[0].position} /> : <Player key={0}/>}
+          {selected_players.Goalkeeper.length > 0 ? (
+            <Player
+              key={0}
+              playerPhoto={selected_players.Goalkeeper[0].img}
+              playerName={selected_players.Goalkeeper[0].name}
+              position={selected_players.Goalkeeper[0].position}
+            />
+          ) : (
+            <Player key={0} />
+          )}
         </div>
-        <Coach />
+        <Coach
+          selectedValue={selected_players.Dt}
+          setSelectedValue={setSelectedDT}
+        />
       </div>
       <div className="footerField">
         <Button
@@ -103,7 +113,8 @@ const Field = (props) => {
 };
 Field.propTypes = {
   formation: PropTypes.string,
-  selected_players: PropTypes.object
+  selected_players: PropTypes.object,
+  setSelectedDT: PropTypes.func.isRequired
 };
 Field.defaultProps = {
   formation: '4-3-3',

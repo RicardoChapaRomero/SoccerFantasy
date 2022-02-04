@@ -8,6 +8,7 @@ import StartPage from './components/start/StartPage';
 import Team from './components/team/Team';
 import Stats from './components/stats/Stats';
 import Social from './components/social/Social';
+import About from './components/about/About';
 
 import { verifyUserToken, verifyUser } from './scripts/apiScripts';
 
@@ -44,7 +45,7 @@ function App() {
         <Route path="/team" element={<Team />} />
         <Route path="/social" element={<Social />} />
         <Route path="/stats" element={<Stats />} />
-        <Route path="/about" element={<h1> about</h1>} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </div>
   );

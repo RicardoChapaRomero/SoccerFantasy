@@ -42,6 +42,7 @@ req.query : {
   pageRows : number,
   page : number (index),
   position: 'All' | 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Attacker'
+  searchText: string
 }
 */
 
@@ -49,7 +50,11 @@ routerFantasy.get('/player', async (req, res) => {
   const pageRows = req.query.pageRows;
   const page = req.query.page;
   const position = req.query.position;
-  const query = position === 'All' ? {} : { position: position };
+  const searchText = req.query.searchText;
+  let query = position === 'All' ? {} : { position: position };
+  if (searchText !== '') {
+    query = { ...query, name: { $regex: searchText, $options: 'i' } };
+  }
   Player.find(query, { strict: false })
     .skip(Number(parseInt(pageRows) * parseInt(page)))
     .limit(pageRows)

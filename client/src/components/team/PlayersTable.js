@@ -61,7 +61,12 @@ function MTable(props) {
   const [players, setPlayers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [position, setPosition] = useState('All');
+  const [searchText, setSearchText] = useState('');
 
+  const handleSearchTextChange = (s) => {
+    setSearchText(s);
+    setPage(0);
+  };
   const handleSetPosition = (p) => {
     setPosition(p);
     setPage(0);
@@ -73,7 +78,7 @@ function MTable(props) {
       setIsLoading(true);
 
       let response = await fetch(
-        `fantasy/player?pageRows=${rowsPerPage}&page=${page}&position=${position}`
+        `fantasy/player?pageRows=${rowsPerPage}&page=${page}&position=${position}&searchText=${searchText}`
       );
       response = await response.json();
       setPlayers(response);
@@ -81,7 +86,7 @@ function MTable(props) {
     }
 
     fetchPlayers();
-  }, [page, position, rowsPerPage]);
+  }, [page, position, rowsPerPage, searchText]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -143,7 +148,7 @@ function MTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="span"
-          count={-1}
+          count={players.length < rowsPerPage ? players.length : -1}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -160,6 +165,8 @@ function MTable(props) {
         setFormation={setFormation}
         position={position}
         setPosition={handleSetPosition}
+        setSearchText={handleSearchTextChange}
+        searchText={searchText}
       ></PlayersTableBar>
 
       <TableContainer className={classes.tableContainer}>

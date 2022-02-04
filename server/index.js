@@ -29,14 +29,22 @@ app.set('port', PORT);
 app.use(express.json());
 app.use(cookie_parser());
 // Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, '../client/build')));
+app.use(express.static(path.resolve(__dirname, './client/build')));
 app.use(morgan('dev'));
 
 // routes
-app.use('/', user_router);
 app.use('/fantasy', routerFantasy);
 app.use('/test', routerTest);
 app.use('/rapidapi', rapidapi_router);
+app.use('/', user_router);
+
+
+app.get('*', (req, res) => {
+  console.log('redirecting');
+  res.sendFile(
+    path.resolve(__dirname, './client/build', 'index.html')
+  );
+});
 
 // Listener
 app.listen(PORT, () => {

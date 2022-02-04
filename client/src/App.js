@@ -3,7 +3,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import Navbar from './components/navbar/Navbar';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import StartPage from './components/start/StartPage';
 import Team from './components/team/Team';
 import Stats from './components/stats/Stats';
@@ -46,6 +46,8 @@ function App() {
         <Route path="/social" element={<Social />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/about" element={<About />} />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
     </div>
   );

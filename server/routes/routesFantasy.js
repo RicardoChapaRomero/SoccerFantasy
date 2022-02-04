@@ -112,7 +112,7 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
     goalkeeper = player.id;
   });
 
-  const fantasy = new Fantasies({
+  const fantasy = {
     user_id: user_id,
     lineup: formation,
     team_lineup: {
@@ -123,12 +123,45 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
       bench: bench,
       dt: dt
     }
-  });
+  };
 
-  await fantasy.save();
+  if ((await Fantasies.findOne({ user_id: user_id })) !== null) {
+    await Fantasies.updateOne({ user_id: user_id }, fantasy);
+  } else {
+    const new_fantasy = new Fantasies(fantasy);
+    await new_fantasy.save();
+  }
 
   res.json({
     message: { done: true }
   });
 });
+
+routerFantasy.get('/getFantasy/:id', async (req, res) => {
+  const user_id = req.params.id;
+  const user_fantasy = await Fantasies.findOne({ user_id: user_id });
+
+  let message = {};
+  if (user_fantasy !== null) {
+    message.team = user_fantasy;
+  }
+
+  res.json({ message: message });
+});
+
+routerFantasy.get('/getPlayer', async (req, res) => {
+  const player_ids_str = req.query.players
+  const player_ids = player_ids_str.split(',');
+  const players = await Player.find({
+    player_id: {
+      $in: player_ids
+    }
+  });
+
+  console.log(players.length);
+
+  console.log(player_ids);
+  res.json({ message: { players: players } });
+});
+
 export { routerFantasy };

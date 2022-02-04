@@ -45,6 +45,7 @@ user_router.get('/login', async (req, res) => {
   let response = { userIsRegistered: user_is_registered };
   if (user_is_registered) {
     response.sessionToken = generateToken(user_DB._id);
+    response.name = user_DB.name;
   }
 
   res.json({ message: response });

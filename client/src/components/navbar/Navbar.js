@@ -18,7 +18,10 @@ import { GoogleLogout } from 'react-google-login';
 
 const ResponsiveAppBar = (props) => {
   const { pages, onAuthChange } = props;
-  const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+  const settings = [
+    'Logout: ' +
+      document.cookie.substr(document.cookie.search('name=') + 5)
+  ];
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -146,9 +149,17 @@ const ResponsiveAppBar = (props) => {
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/2.jpg"
-              />
+                alt={document.cookie.substr(
+                  document.cookie.search('name=') + 5
+                )}
+                src=""
+              >
+                {
+                  document.cookie.substr(
+                    document.cookie.search('name=') + 5
+                  )[0]
+                }
+              </Avatar>
             </IconButton>
           </Tooltip>
           <Menu
@@ -168,33 +179,24 @@ const ResponsiveAppBar = (props) => {
             onClose={handleCloseUserMenu}
           >
             {settings.map((setting) => {
-              if (setting === 'Logout') {
-                return (
-                  <GoogleLogout
-                    clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
-                    onLogoutSuccess={() => onAuthChange(false)}
-                    render={(renderProps) => (
-                      <MenuItem
-                        key={setting}
-                        onClick={() =>
-                          handleLogoutEvent(renderProps.onClick)
-                        }
-                        disabled={renderProps.disabled}
-                      >
-                        <Typography textAlign="center">
-                          {setting}
-                        </Typography>
-                      </MenuItem>
-                    )}
-                  ></GoogleLogout>
-                );
-              }
               return (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">
-                    {setting}
-                  </Typography>
-                </MenuItem>
+                <GoogleLogout
+                  clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+                  onLogoutSuccess={() => onAuthChange(false)}
+                  render={(renderProps) => (
+                    <MenuItem
+                      key={setting}
+                      onClick={() =>
+                        handleLogoutEvent(renderProps.onClick)
+                      }
+                      disabled={renderProps.disabled}
+                    >
+                      <Typography textAlign="center">
+                        {setting}
+                      </Typography>
+                    </MenuItem>
+                  )}
+                ></GoogleLogout>
               );
             })}
           </Menu>

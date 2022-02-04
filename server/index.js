@@ -9,6 +9,7 @@ import { user_router } from './routes/userRoutes.js';
 // import { RapidApi } from './routes/rapidApiRoutes.js';
 import { routerFantasy } from './routes/routesFantasy.js';
 import { routerTest } from './routes/testRoutes.js';
+import { rapidapi_router } from './routes/rapidApiRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -35,6 +36,7 @@ app.use(morgan('dev'));
 app.use('/', user_router);
 app.use('/fantasy', routerFantasy);
 app.use('/test', routerTest);
+app.use('/rapidapi', rapidapi_router);
 
 // Listener
 app.listen(PORT, () => {

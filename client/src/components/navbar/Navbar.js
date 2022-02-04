@@ -18,10 +18,7 @@ import { GoogleLogout } from 'react-google-login';
 
 const ResponsiveAppBar = (props) => {
   const { pages, onAuthChange } = props;
-  const settings = [
-    'Logout: ' +
-      document.cookie.substr(document.cookie.search('name=') + 5)
-  ];
+  const settings = ['Logout'];
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 

@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookie_parser from 'cookie-parser';
 import { user_router } from './routes/userRoutes.js';
-import { rapidapi_router } from './routes/rapidApiRoutes.js';
+import { RapidApi } from './routes/rapidApiRoutes.js';
 import { routerFantasy } from './routes/routesFantasy.js';
 
 dotenv.config();
@@ -30,7 +30,6 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // routes
 app.use('/', user_router);
-app.use('/rapidapi', rapidapi_router);
 app.use('/fantasy', routerFantasy);
 
 // Listener

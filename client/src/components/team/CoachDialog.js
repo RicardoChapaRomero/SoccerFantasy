@@ -104,9 +104,14 @@ function CoachDialog(props) {
         sx={{
           minWidth: '50px',
           backgroundColor:
-            localDT.id === coach.dt_id ? colors.yellow : colors.white,
+            localDT.id === coach.dt_id
+              ? colors.beigeTwo
+              : colors.white,
           '&:hover': {
-            backgroundColor: colors.hoverYellow
+            backgroundColor:
+              localDT.id === coach.dt_id
+                ? colors.beigeTwo
+                : colors.beige
           }
         }}
       >

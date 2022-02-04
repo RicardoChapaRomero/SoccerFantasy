@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookie_parser from 'cookie-parser';
 import { user_router } from './routes/userRoutes.js';
-import { RapidApi } from './routes/rapidApiRoutes.js';
+// import { RapidApi } from './routes/rapidApiRoutes.js';
 import { routerFantasy } from './routes/routesFantasy.js';
 import { routerTest } from './routes/testRoutes.js';
 

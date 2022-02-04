@@ -9,15 +9,24 @@ import {
   getPlayers
 } from '../../scripts/apiScripts';
 
+const initialState = {
+  Goalkeeper: [],
+  Defender: [],
+  Midfielder: [],
+  Attacker: [],
+  Dt: { id: -1, name: '', photo: '' }
+};
 const Team = () => {
   const [formation, setFormation] = useState('4-3-3');
-  const [selected_players, setSelectedPlayers] = useState({
-    Goalkeeper: [],
-    Defender: [],
-    Midfielder: [],
-    Attacker: [],
-    Dt: { id: -1, name: '', photo: '' }
-  });
+  const [selected_players, setSelectedPlayers] =
+    useState(initialState);
+
+  const onFormationChange = (form) => {
+    if (formation !== form) {
+      setSelectedPlayers(initialState);
+      setFormation(form);
+    }
+  };
 
   const handleDTChange = (coach) => {
     const stateCopy = selected_players;
@@ -38,10 +47,11 @@ const Team = () => {
       if (lineup.goalkeeper.length) players.push(lineup.goalkeeper);
 
       const players_res = await getPlayers(players);
-      players_res.team.Dt = (fantasy_team.team.team_lineup.dt.id !== -1) ? 
-        fantasy_team.team.team_lineup.dt :
-        { id: -1, name: '', photo: '' };
-        
+      players_res.team.Dt =
+        fantasy_team.team.team_lineup.dt.id !== -1
+          ? fantasy_team.team.team_lineup.dt
+          : { id: -1, name: '', photo: '' };
+
       setFormation(fantasy_team.team.lineup);
       setSelectedPlayers(players_res.team);
     }
@@ -66,11 +76,12 @@ const Team = () => {
       ></Field>
       <PlayersTable
         formation={formation}
-        setFormation={setFormation}
+        onFormationChange={onFormationChange}
         selected_players={selected_players}
         setSelectedPlayers={(selected_players) =>
           setSelectedPlayers(selected_players)
         }
+        emptyTeam={false}
       ></PlayersTable>
     </Stack>
   );

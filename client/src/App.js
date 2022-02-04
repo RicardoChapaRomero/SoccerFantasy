@@ -7,6 +7,8 @@ import { Routes, Route } from 'react-router-dom';
 import StartPage from './components/start/StartPage';
 import Team from './components/team/Team';
 import Stats from './components/stats/Stats';
+import Social from './components/social/Social';
+
 import { verifyUserToken, verifyUser } from './scripts/apiScripts';
 
 function App() {
@@ -26,7 +28,7 @@ function App() {
 
     verifyToken();
   }, []);
-  
+
   if (!isAuth) {
     return <StartPage onAuthChange={(isAuth) => setIsAuth(isAuth)} />;
   }
@@ -41,7 +43,7 @@ function App() {
       <Routes>
         <Route path="/" element={<h1> home</h1>} />
         <Route path="/team" element={<Team />} />
-        <Route path="/social" element={<h1> social</h1>} />
+        <Route path="/social" element={<Social />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/about" element={<h1> about</h1>} />
       </Routes>

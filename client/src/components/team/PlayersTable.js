@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import { getColor } from '../../constants/positions';
 import Logo from '../Logo';
 import Stack from '@mui/material/Stack';
-import { Button } from '@mui/material';
+import Badge from '@mui/material/Badge';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -52,10 +52,16 @@ const useStyles = makeStyles((theme) => ({
 
 const defaultPrice = 1000000,
   defaultPoint = 0;
-const COLUMNS = ['Player', 'Position', 'Team', 'Price', 'Points', 'Status'];
+const COLUMNS = ['Player', 'Position', 'Team', 'Price', 'Points'];
 
 function MTable(props) {
-  const { formation, setFormation, selected_players, setSelectedPlayers } = props;
+  const {
+    formation,
+    onFormationChange,
+    selected_players,
+    setSelectedPlayers,
+    emptyTeam
+  } = props;
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -107,35 +113,87 @@ function MTable(props) {
 
   const addPlayerEvent = (player) => {
     const position = player.position;
-    if (selected_players[position].length < formation_size[position]) {
+    if (
+      selected_players[position].length < formation_size[position]
+    ) {
       selected_players[position].push({
         id: player.player_id,
         name: player.name,
         img: player.photo,
         position: position
       });
-      setSelectedPlayers({...selected_players});
+      setSelectedPlayers({ ...selected_players });
     }
   };
 
   const deletePlayerEvent = (position, player) => {
     selected_players[position].splice(player, 1);
-    setSelectedPlayers({...selected_players});
-  }
+    setSelectedPlayers({ ...selected_players });
+  };
 
   const tableContent = isLoading ? null : (
     <>
       <TableBody>
         {players.map((row) => (
-          <TableRow key={row.name}>
+          <TableRow
+            key={row.name}
+            sx={{
+              backgroundColor: colors.white,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: colors.beigeTwo
+              }
+            }}
+            onClick={() => {
+              const player_index = selected_players[row.position]
+                .map((p) => {
+                  return p.id;
+                })
+                .indexOf(row.player_id);
+              player_index === -1
+                ? addPlayerEvent(row)
+                : deletePlayerEvent(row.position, player_index);
+            }}
+          >
             <TableCell>
               <Grid container>
-                <Grid item lg={2}>
-                  <Avatar
-                    alt={row.name}
-                    src={row.photo}
-                    className={classes.avatar}
-                  />
+                <Grid item lg={2} mr={1}>
+                  {selected_players[row.position]
+                    .map((p) => {
+                      return p.id;
+                    })
+                    .indexOf(row.player_id) !== -1 && (
+                    <Badge
+                      overlap="circular"
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                      }}
+                      badgeContent={
+                        <Logo
+                          size="20px"
+                          color={colors.primaryGreen}
+                        />
+                      }
+                    >
+                      <Avatar
+                        alt={row.name}
+                        src={row.photo}
+                        className={classes.avatar}
+                      />
+                    </Badge>
+                  )}
+                  {selected_players[row.position]
+                    .map((p) => {
+                      return p.id;
+                    })
+                    .indexOf(row.player_id) === -1 && (
+                    <Avatar
+                      alt={row.name}
+                      src={row.photo}
+                      className={classes.avatar}
+                    />
+                  )}
                 </Grid>
                 <Grid item lg={6}>
                   <Typography className={classes.name}>
@@ -166,21 +224,8 @@ function MTable(props) {
               />
             </TableCell>
             <TableCell>{defaultPrice}</TableCell>
-            <TableCell>{(row.points) ? row.points : defaultPoint}</TableCell>
             <TableCell>
-              <Button
-                variant='contained'
-                color={
-                  selected_players[row.position].map((p) => {return p.id})
-                    .indexOf(row.player_id) === -1 ? 'success' : 'error'}
-                onClick={() => {
-                  const player_index = selected_players[row.position]
-                  .map((p) => {return p.id}).indexOf(row.player_id);
-                  player_index === -1 ? addPlayerEvent(row) : deletePlayerEvent(row.position, player_index);
-                }}>
-                {selected_players[row.position].map((p) => {return p.id})
-                  .indexOf(row.player_id) === -1 ? 'Add' : 'Remove'}
-              </Button>
+              {row.points ? row.points : defaultPoint}
             </TableCell>
           </TableRow>
         ))}
@@ -203,11 +248,12 @@ function MTable(props) {
     <div>
       <PlayersTableBar
         formation={formation}
-        setFormation={setFormation}
+        onFormationChange={onFormationChange}
         position={position}
         setPosition={handleSetPosition}
         setSearchText={handleSearchTextChange}
         searchText={searchText}
+        emptyTeam={emptyTeam}
       ></PlayersTableBar>
 
       <TableContainer className={classes.tableContainer}>
@@ -244,13 +290,14 @@ function MTable(props) {
 }
 
 MTable.propTypes = {
-  setFormation: PropTypes.func,
+  onFormationChange: PropTypes.func,
   formation: PropTypes.string,
   selected_players: PropTypes.object,
-  setSelectedPlayers: PropTypes.func
+  setSelectedPlayers: PropTypes.func,
+  emptyTeam: PropTypes.bool.isRequired
 };
 MTable.defaultProps = {
-  setFormation: () => console.log('formation callback default'),
+  onFormationChange: () => console.log('formation callback default'),
   formation: '4-3-3'
 };
 

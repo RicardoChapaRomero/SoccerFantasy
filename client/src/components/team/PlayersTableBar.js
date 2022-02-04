@@ -12,18 +12,33 @@ import Select from '@mui/material/Select';
 import PropTypes from 'prop-types';
 import colors from '../../constants/colors';
 import TextField from '@mui/material/TextField';
-
+import ChangeFormation from './ChangeFormation';
 const ALL_FORMATIONS = 'All';
 
 function MBar(props) {
   const {
     formation,
     setFormation,
+    onFormationChange,
+    emptyTeam,
     position,
     setPosition,
     searchText,
     setSearchText
   } = props;
+
+  const [newFormation, setNewFormation] = useState(formation);
+  const [open, setOpen] = useState(false);
+
+  const handleFormationChange = (newForm) => {
+    if (emptyTeam === true) {
+      onFormationChange(newForm);
+    }
+    if (formation !== newForm) {
+      setNewFormation(newForm);
+      setOpen(true);
+    }
+  };
 
   const formationDropdown = (
     <Box sx={{ minWidth: 100 }}>
@@ -39,7 +54,7 @@ function MBar(props) {
           id="demo-simple-select"
           value={formation}
           label="Formation"
-          onChange={(e) => setFormation(e.target.value)}
+          onChange={(e) => handleFormationChange(e.target.value)}
           renderValue={() => (
             <Box sx={{ padding: '4px 0px 5px 0px' }}>{formation}</Box>
           )}
@@ -112,10 +127,19 @@ function MBar(props) {
     </Box>
   );
 
+  const DialogAlert = (
+    <ChangeFormation
+      onFormationChange={onFormationChange}
+      formation={newFormation}
+      open={open}
+      setOpen={setOpen}
+    />
+  );
+
   return (
     <div id="box">
       {formationDropdown} {positionSelect}
-      {searchTextInput}
+      {searchTextInput} {DialogAlert}
     </div>
   );
 }
@@ -126,7 +150,9 @@ MBar.propTypes = {
   setPosition: PropTypes.func,
   position: PropTypes.string,
   setSearchText: PropTypes.func,
-  searchText: PropTypes.string
+  searchText: PropTypes.string,
+  emptyTeam: PropTypes.bool.isRequired,
+  onFormationChange: PropTypes.func.isRequired
 };
 MBar.defaultProps = {
   setFormation: () => console.log('formation callback default'),

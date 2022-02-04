@@ -140,7 +140,9 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
 
   let fantasy_points = 0;
   for (const player of players_data) {
-    fantasy_points += Number.parseInt((player.points) ? player.points : '0');
+    fantasy_points += Number.parseInt(
+      player.points ? player.points : '0'
+    );
   }
 
   const fantasy = {
@@ -153,11 +155,16 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
       midfield: midfielders,
       attack: attackers,
       bench: bench,
-      dt: (team.Dt.id !== -1) ? team.Dt : dt
+      dt: team.Dt.id !== -1 ? team.Dt : dt
     }
   };
 
-  if ((await Fantasies.findOne({ user_id: user_id }, { strict: false })) !== null) {
+  if (
+    (await Fantasies.findOne(
+      { user_id: user_id },
+      { strict: false }
+    )) !== null
+  ) {
     await Fantasies.updateOne({ user_id: user_id }, fantasy);
   } else {
     const new_fantasy = new Fantasies(fantasy);
@@ -181,8 +188,26 @@ routerFantasy.get('/getFantasy/:id', async (req, res) => {
   res.json({ message: message });
 });
 
+routerFantasy.get('/fantasies', async (req, res) => {
+  const pageRows = req.query.pageRows;
+  const page = req.query.page;
+
+  Fantasies.find({}, { strict: false })
+    .skip(Number(parseInt(pageRows) * parseInt(page)))
+    .limit(pageRows)
+    .populate({ path: 'user_id', model: User })
+    .exec(function (err, teams) {
+      if (err) {
+        console.log(err);
+        res.json(err);
+        return;
+      }
+      res.json(teams);
+    });
+});
+
 routerFantasy.get('/getPlayer', async (req, res) => {
-  const player_ids_str = req.query.players
+  const player_ids_str = req.query.players;
   const player_ids = player_ids_str.split(',');
   //let players = [];
 
@@ -202,7 +227,7 @@ routerFantasy.get('/getPlayer', async (req, res) => {
     Defender: [],
     Midfielder: [],
     Attacker: []
-  }
+  };
 
   for (const player of players) {
     team[player.position].push({

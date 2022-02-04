@@ -32,6 +32,15 @@ const theme = createTheme({
         }
       }
     },
+    MuiChip: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          color: colors.beige
+          // Some CSS
+        }
+      }
+    },
     MuiOutlinedInput: {
       styleOverrides: {
         // Name of the slot

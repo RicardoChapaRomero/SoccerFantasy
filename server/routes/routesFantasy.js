@@ -106,7 +106,7 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
     goalkeeper = player.id;
   });
 
-  const fantasy = new Fantasies({
+  const fantasy = {
     user_id: user_id,
     lineup: formation,
     team_lineup: {
@@ -117,9 +117,14 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
       bench: bench,
       dt: dt
     }
-  });
+  };
 
-  await fantasy.save();
+  if ((await Fantasies.findOne({ user_id: user_id })) !== null) {
+    await Fantasies.updateOne({ user_id: user_id }, fantasy);
+  } else {
+    const new_fantasy = new Fantasies(fantasy);
+    await new_fantasy.save();
+  }
 
   res.json({
     message: { done: true }

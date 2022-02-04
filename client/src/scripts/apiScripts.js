@@ -43,9 +43,8 @@ export async function googleAuthOnSuccess(response) {
 }
 
 export function googleAuthOnFailure(response) {
-  alert(
-    `Something went wrong with Google Login.`
-      `Try with your email and password`);
+  console.log(
+    'Something went wrong with Google Login. Try with your email and password');
 }
 
 /** Login Form Handler

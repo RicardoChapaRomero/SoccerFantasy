@@ -50,7 +50,8 @@ const dt_schema = schema({
   name: String,
   age: Number,
   nationality: String,
-  photo: String
+  photo: String,
+  team_id: String
 });
 
 const user_schema = schema({

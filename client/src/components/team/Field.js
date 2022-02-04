@@ -106,6 +106,7 @@ const Field = (props) => {
         <Coach
           selectedValue={selected_players.Dt}
           setSelectedValue={setSelectedDT}
+          social={false}
         />
       </div>
       <div className="footerField">

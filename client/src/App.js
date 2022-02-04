@@ -42,7 +42,7 @@ function App() {
         {' '}
       </Navbar>
       <Routes>
-        <Route path="/team" element={<Team />} />
+        <Route path="/" element={<Team />} />
         <Route path="/social" element={<Social />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/about" element={<About />} />

@@ -78,6 +78,7 @@ const Field = (props) => {
         <Coach
           selectedValue={selected_players.Dt}
           setSelectedValue={setSelectedDT}
+          social={true}
         />
       </div>
     </div>

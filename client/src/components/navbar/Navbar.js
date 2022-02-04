@@ -44,7 +44,7 @@ const ResponsiveAppBar = (props) => {
   };
 
   const LogoC = (
-    <Link to="/team" style={{ textDecoration: 'none' }}>
+    <Link to="/" style={{ textDecoration: 'none' }}>
       <Logo size="50px" color={colors.beige}></Logo>
     </Link>
   );
@@ -99,7 +99,7 @@ const ResponsiveAppBar = (props) => {
             {pages.map((page) => (
               <MenuItem key={page} onClick={handleCloseNavMenu}>
                 <Link
-                  to={'/' + page}
+                  to={page === 'team' ? '/' : `/${page}`}
                   style={{
                     textDecoration: 'none',
                     textTransform: 'uppercase',
@@ -126,7 +126,10 @@ const ResponsiveAppBar = (props) => {
           sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
         >
           {pages.map((page) => (
-            <Link to={'/' + page} style={{ textDecoration: 'none' }}>
+            <Link
+              to={page === 'team' ? '/' : `/${page}`}
+              style={{ textDecoration: 'none' }}
+            >
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}

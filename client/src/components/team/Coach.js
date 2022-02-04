@@ -10,7 +10,7 @@ import CoachDialog from './CoachDialog';
 import Tooltip from '@mui/material/Tooltip';
 
 const Coach = (props) => {
-  const { selectedValue, setSelectedValue } = props;
+  const { selectedValue, setSelectedValue, social } = props;
   const { name, photo, id } = selectedValue;
 
   const [open, setOpen] = useState(false);
@@ -47,6 +47,27 @@ const Coach = (props) => {
     name !== '' ? (
       <Chip color={getColor('Coach')} label={name} />
     ) : null;
+
+  const CoachContent = (
+    <Stack
+      direction="column"
+      spacing={{ md: 2, xs: 1 }}
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        position: 'absolute',
+        bottom: '15px',
+        right: '15px',
+        cursor: social ? 'unset' : 'pointer'
+      }}
+    >
+      {CoachAvatar}
+      {CoachChip}
+    </Stack>
+  );
+  if (social) {
+    return CoachContent;
+  }
   return (
     <>
       <Tooltip
@@ -54,21 +75,7 @@ const Coach = (props) => {
         placement="top"
         onClick={handleClickOpen}
       >
-        <Stack
-          direction="column"
-          spacing={{ md: 2, xs: 1 }}
-          justifyContent="center"
-          alignItems="center"
-          sx={{
-            position: 'absolute',
-            bottom: '15px',
-            right: '15px',
-            cursor: 'pointer'
-          }}
-        >
-          {CoachAvatar}
-          {CoachChip}
-        </Stack>
+        {CoachContent}
       </Tooltip>
       <CoachDialog
         selectedValue={selectedValue}
@@ -82,6 +89,7 @@ const Coach = (props) => {
 
 Coach.defaultProps = {
   selectedValue: PropTypes.object.isRequired,
-  setSelectedValue: PropTypes.func.isRequired
+  setSelectedValue: PropTypes.func.isRequired,
+  social: PropTypes.bool.isRequired
 };
 export default Coach;

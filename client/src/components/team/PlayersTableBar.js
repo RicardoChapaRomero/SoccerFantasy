@@ -10,15 +10,20 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
 import colors from '../../constants/colors';
+import TextField from '@mui/material/TextField';
 
 const ALL_FORMATIONS = 'All';
 
 function MBar(props) {
-  const { formation, setFormation } = props;
-  const [positionFilters, setPositionFilter] =
-    useState(ALL_FORMATIONS);
+  const {
+    formation,
+    setFormation,
+    position,
+    setPosition,
+    searchText,
+    setSearchText
+  } = props;
 
   const formationDropdown = (
     <Box sx={{ minWidth: 100 }}>
@@ -46,7 +51,7 @@ function MBar(props) {
       </FormControl>
     </Box>
   );
-  const positionFilterSelect = (
+  const positionSelect = (
     <Box sx={{ minWidth: 100 }}>
       <FormControl variant="standard" fullWidth>
         <InputLabel
@@ -58,21 +63,21 @@ function MBar(props) {
         <Select
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
-          onChange={(e) => setPositionFilter(e.target.value)}
-          value={positionFilters}
+          onChange={(e) => setPosition(e.target.value)}
+          value={position}
           renderValue={() => {
-            if (positionFilters === ALL_FORMATIONS) {
+            if (position === ALL_FORMATIONS) {
               return (
                 <Box sx={{ padding: '4px 0px 5px 0px' }}>
-                  {positionFilters}
+                  {position}
                 </Box>
               );
             }
             return (
               <Chip
-                key={positionFilters}
-                label={positionFilters}
-                color={getColor(positionFilters)}
+                key={position}
+                label={position}
+                color={getColor(position)}
               />
             );
           }}
@@ -90,33 +95,46 @@ function MBar(props) {
     </Box>
   );
 
-  const saveButton = (
-    <Button
-      sx={{ display: 'flex', alignSelf: 'center' }}
-      onClick={() => alert('Saving team')}
-      variant="contained"
+  const searchTextInput = (
+    <Box
+      sx={{ padding: '8px 0px 5px 0px', maxWidth: '150px' }}
+      component="form"
+      noValidate
+      autoComplete="off"
     >
-      save team
-    </Button>
+      <TextField
+        id="standard-basic"
+        label="Name"
+        variant="standard"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+    </Box>
   );
-
-  const dtDropdown = <div></div>;
 
   return (
     <div id="box">
-      {formationDropdown} {positionFilterSelect}
-      {dtDropdown} {saveButton}
+      {formationDropdown} {positionSelect}
+      {searchTextInput}
     </div>
   );
 }
 
 MBar.propTypes = {
   setFormation: PropTypes.func,
-  formation: PropTypes.string
+  formation: PropTypes.string,
+  setPosition: PropTypes.func,
+  position: PropTypes.string,
+  setSearchText: PropTypes.func,
+  searchText: PropTypes.string
 };
 MBar.defaultProps = {
   setFormation: () => console.log('formation callback default'),
-  formation: '4-3-3'
+  formation: '4-3-3',
+  setPosition: () => console.log('position callback default'),
+  position: ALL_FORMATIONS,
+  setSearchText: () => console.log('search text callback default'),
+  searchText: ''
 };
 
 export default MBar;

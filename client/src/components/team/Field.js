@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './Field.css';
 import Player from './Player';
 import Coach from './Coach';
+import Button from '@mui/material/Button';
 
 const Field = (props) => {
   const { formation } = props;
@@ -17,14 +18,29 @@ const Field = (props) => {
     defenders.push(<Player key={i} />);
 
   return (
-    <div className="field">
-      <div className="line">{attackers}</div>
-      <div className="line">{midfielders}</div>
-      <div className="line">{defenders}</div>
-      <div className="line">
-        <Player />
+    <div>
+      <div className="field">
+        <div className="line">{attackers}</div>
+        <div className="line">{midfielders}</div>
+        <div className="line">{defenders}</div>
+        <div className="line">
+          <Player />
+        </div>
+        <Coach />
       </div>
-      <Coach />
+      <div className="footerField">
+        <Button
+          sx={{
+            display: 'flex',
+            alignSelf: 'center',
+            marginTop: '5px'
+          }}
+          onClick={() => alert('Saving team')}
+          variant="contained"
+        >
+          save team
+        </Button>
+      </div>
     </div>
   );
 };

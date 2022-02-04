@@ -8,6 +8,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import colors from '../../constants/colors';
 import Logo from '../Logo';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -24,9 +27,10 @@ const useStyles = makeStyles((theme) => ({
     color: colors.black
   },
   avatar: {
-    backgroundColor: theme.palette.info.main,
-    color: theme.palette.getContrastText(theme.palette.primary.light),
-    marginRight: '5px'
+    width: 25,
+    height: 25,
+    marginLeft: 5,
+    marginRight: 5
   },
   name: {
     fontWeight: 'bold',
@@ -49,7 +53,16 @@ MODEL STANDING
             "total_wins": 2,
             "total_draws": 1,
             "total_losses": 0,
-            "__v": 0
+            "__v": 0,
+             "team_object": {
+              "_id": "61f87e2ff9a3d10450799e38",
+              "team_id": "2283",
+              "name": "Atlas",
+              "founded": 1916,
+              "logo": "https://media.api-sports.io/football/teams/2283.png",
+              "venue_id": "1071",
+              "__v": 0
+        }
         }
 */
 function Standings(props) {
@@ -76,7 +89,7 @@ function Standings(props) {
     return (
       <>
         <Logo size={200} loader={true} />
-        <h2>Loading... </h2>
+        <h2 style={{ color: colors.darkGray }}>Loading... </h2>
       </>
     );
   }
@@ -99,7 +112,27 @@ function Standings(props) {
         <TableBody>
           {teams.map((row) => (
             <TableRow key={row.team_id}>
-              <TableCell>{row.rank + ' ' + row.team_id}</TableCell>
+              <TableCell>
+                <Grid container>
+                  <Grid item lg={1}>
+                    <Typography className={classes.name}>
+                      {row.rank}
+                    </Typography>
+                  </Grid>
+                  <Grid item lg={1}>
+                    <Avatar
+                      alt={row.team_object.name}
+                      src={row.team_object.logo}
+                      className={classes.avatar}
+                    />
+                  </Grid>
+                  <Grid item lg={4}>
+                    <Typography className={classes.name}>
+                      {row.team_object.name}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </TableCell>
               <TableCell>
                 {row.total_draws + row.total_losses + row.total_wins}
               </TableCell>

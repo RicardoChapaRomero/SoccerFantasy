@@ -16,6 +16,8 @@ import Chip from '@mui/material/Chip';
 import PlayersTableBar from './PlayersTableBar';
 import PropTypes from 'prop-types';
 import { getColor } from '../../constants/positions';
+import Logo from '../Logo';
+import Stack from '@mui/material/Stack';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -24,10 +26,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: colors.white
   },
   tableContainer: {
-    maxWidth: '55vw',
+    width: '55vw',
     maxHeight: 'calc(94vh - 144px)',
     ['@media (max-width:900px)']: {
-      maxWidth: '95vw'
+      width: '95vw'
     }
   },
   tableHeaderCell: {
@@ -36,9 +38,10 @@ const useStyles = makeStyles((theme) => ({
     color: colors.black
   },
   avatar: {
-    backgroundColor: theme.palette.info.main,
     color: theme.palette.getContrastText(theme.palette.primary.light),
-    marginRight: '5px'
+    marginRight: '5px',
+    width: 35,
+    height: 35
   },
   name: {
     fontWeight: 'bold',
@@ -50,33 +53,40 @@ const defaultPrice = 1000000,
   defaultPoint = 0;
 const COLUMNS = ['Player', 'Position', 'Team', 'Price', 'Points'];
 
-const initPlayers = (setPlayers) => {
-  let players = [];
-  for (let i = 0; i < 14; i++) {
-    players[i] = {
-      name: 'M. Araújo',
-      age: 22,
-      position: 'Midfielder',
-      photo: 'https://media.api-sports.io/football/players/51776.png',
-      rating: '6.866666',
-      team_id: '2291',
-      goals: 2
-    };
-  }
-  setPlayers(players);
-};
-
 function MTable(props) {
   const { formation, setFormation } = props;
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [players, setPlayers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [position, setPosition] = useState('All');
+  const [searchText, setSearchText] = useState('');
 
-  // for now runs onComponentMount
+  const handleSearchTextChange = (s) => {
+    setSearchText(s);
+    setPage(0);
+  };
+  const handleSetPosition = (p) => {
+    setPosition(p);
+    setPage(0);
+  };
+
   useEffect(() => {
-    initPlayers(setPlayers);
-  }, []);
+    async function fetchPlayers() {
+      setPlayers([]);
+      setIsLoading(true);
+
+      let response = await fetch(
+        `fantasy/player?pageRows=${rowsPerPage}&page=${page}&position=${position}&searchText=${searchText}`
+      );
+      response = await response.json();
+      setPlayers(response);
+      setIsLoading(false);
+    }
+
+    fetchPlayers();
+  }, [page, position, rowsPerPage, searchText]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -87,12 +97,78 @@ function MTable(props) {
     setPage(0);
   };
 
+  const tableContent = isLoading ? null : (
+    <>
+      <TableBody>
+        {players.map((row) => (
+          <TableRow key={row.name}>
+            <TableCell>
+              <Grid container>
+                <Grid item lg={2}>
+                  <Avatar
+                    alt={row.name}
+                    src={row.photo}
+                    className={classes.avatar}
+                  />
+                </Grid>
+                <Grid item lg={6}>
+                  <Typography className={classes.name}>
+                    {row.name}
+                  </Typography>
+                  <Typography color="textSecondary" variant="body2">
+                    {'Age: ' + row.age}
+                  </Typography>
+                  {row.goals && (
+                    <Typography color="textSecondary" variant="body2">
+                      {'Goals: ' + row.goals}
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
+            </TableCell>
+            <TableCell>
+              <Chip
+                color={getColor(row.position)}
+                label={row.position}
+              />
+            </TableCell>
+            <TableCell>
+              <Avatar
+                alt={row.team_object.name}
+                src={row.team_object.logo}
+                className={classes.avatar}
+              />
+            </TableCell>
+            <TableCell>{defaultPrice}</TableCell>
+            <TableCell>{defaultPoint}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+      <TableFooter>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 15]}
+          component="span"
+          count={players.length < rowsPerPage ? players.length : -1}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableFooter>
+    </>
+  );
+
   return (
     <div>
       <PlayersTableBar
         formation={formation}
         setFormation={setFormation}
+        position={position}
+        setPosition={handleSetPosition}
+        setSearchText={handleSearchTextChange}
+        searchText={searchText}
       ></PlayersTableBar>
+
       <TableContainer className={classes.tableContainer}>
         <Table
           stickyHeader
@@ -108,73 +184,20 @@ function MTable(props) {
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {players
-              .slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-              )
-              .map((row) => (
-                <TableRow key={row.name}>
-                  <TableCell>
-                    <Grid container>
-                      <Grid item lg={2}>
-                        <Avatar
-                          alt={row.name}
-                          src={row.photo}
-                          className={classes.avatar}
-                        />
-                      </Grid>
-                      <Grid item lg={4}>
-                        <Typography className={classes.name}>
-                          {row.name}
-                        </Typography>
-                        <Typography
-                          color="textSecondary"
-                          variant="body2"
-                        >
-                          {'Age: ' + row.age}
-                        </Typography>
-                        {row.goals && (
-                          <Typography
-                            color="textSecondary"
-                            variant="body2"
-                          >
-                            {'Goals: ' + row.goals}
-                          </Typography>
-                        )}
-                      </Grid>
-                    </Grid>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      color={getColor(row.position)}
-                      label={row.position}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography color="textSecondary" variant="body2">
-                      {row.team_id}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>{defaultPrice}</TableCell>
-                  <TableCell>{defaultPoint}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 15]}
-              component="span"
-              count={players.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </TableFooter>
+          {tableContent}
         </Table>
       </TableContainer>
+      {isLoading && (
+        <Stack
+          spacing={1}
+          mt={3}
+          alignItems="center"
+          direction="column"
+        >
+          <Logo size={200} loader={true} />
+          <h2 style={{ color: colors.darkGray }}>Loading... </h2>
+        </Stack>
+      )}
     </div>
   );
 }

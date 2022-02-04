@@ -107,5 +107,6 @@ const Team = mongoose.model('Teams', team_schema);
 const Venue = mongoose.model('Venues', venue_schema);
 const Standing = mongoose.model('Standings', standings_schema);
 const Round = mongoose.model('Rounds', rounds_schema);
+const Fantasies = mongoose.model('Fantasies', user_fantasy);
 
-export { User, Player, Dt, Team, Venue, Standing, Round };
+export { User, Player, Dt, Team, Venue, Standing, Round, Fantasies };

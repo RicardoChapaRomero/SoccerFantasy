@@ -115,3 +115,7 @@ export async function formRegister(email, password, teamName, name) {
 export async function verifyUser(id) {
   return await doFetch('/verifyUser', 'GET', { userId: id });
 }
+
+export async function saveFantasy(id, team) {
+  return await doFetch(`/fantasy/saveFantasy/${id}`, 'POST', team);
+}

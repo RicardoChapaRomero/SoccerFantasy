@@ -7,7 +7,8 @@ import {
   Team,
   Venue,
   Standing,
-  Round
+  Round,
+  Fantasies
 } from '../models/model.js';
 
 const routerFantasy = express.Router();
@@ -46,7 +47,7 @@ req.query : {
 }
 */
 
-routerFantasy.get('/player', async (req, res) => {
+routerFantasy.get('/players', async (req, res) => {
   const pageRows = req.query.pageRows;
   const page = req.query.page;
   const position = req.query.position;
@@ -67,5 +68,61 @@ routerFantasy.get('/player', async (req, res) => {
       }
       res.json(players);
     });
+});
+
+/**
+ * {
+ *   players: {
+ *     Goalkeeper: [],
+ *     Defender: [ [Object] ],
+ *     Midfielder: [ [Object] ],
+ *     Attacker: [ [Object] ]
+ *   },
+ *   formation: '4-3-3'
+ * }
+ */
+routerFantasy.post('/saveFantasy/:id', async (req, res) => {
+  const user_id = req.params.id;
+
+  let attackers = [], defenders = [], midfielders = [],
+    bench = [], dt = [];
+  let goalkeeper = '';
+
+  const formation = req.body.formation;
+  const team = req.body.players;
+  team.Attacker.forEach((player) => {
+    attackers.push(player.id);
+  });
+
+  team.Defender.forEach((player) => {
+    defenders.push(player.id);
+  });
+
+  team.Midfielder.forEach((player) => {
+    midfielders.push(player.id);
+  });
+
+  team.Goalkeeper.forEach((player) => {
+    goalkeeper = player.id;
+  });
+
+  const fantasy = new Fantasies({
+    user_id: user_id,
+    lineup: formation,
+    team_lineup: {
+      goalkeeper: goalkeeper,
+      defense: defenders,
+      midfield: midfielders,
+      attack: attackers,
+      bench: bench,
+      dt: dt
+    }
+  });
+
+  await fantasy.save();
+
+  res.json({
+    message: { done: true }
+  });
 });
 export { routerFantasy };

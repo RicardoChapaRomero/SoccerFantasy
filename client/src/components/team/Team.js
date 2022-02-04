@@ -6,6 +6,12 @@ import Stack from '@mui/material/Stack';
 
 const Team = () => {
   const [formation, setFormation] = useState('4-3-3');
+  const [selected_players, setSelectedPlayers] = useState({
+    Goalkeeper: [],
+    Defender: [],
+    Midfielder: [],
+    Attacker: []
+  });
 
   return (
     <Stack
@@ -17,10 +23,12 @@ const Team = () => {
         padding: '2vh 0'
       }}
     >
-      <Field formation={formation}></Field>
+      <Field formation={formation} selected_players={selected_players}></Field>
       <PlayersTable
         formation={formation}
         setFormation={setFormation}
+        selected_players={selected_players}
+        setSelectedPlayers={(selected_players) => setSelectedPlayers(selected_players)}
       ></PlayersTable>
     </Stack>
   );

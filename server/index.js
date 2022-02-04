@@ -1,6 +1,7 @@
 // server/index.js
 import express from 'express';
 import path from 'path';
+import morgan from 'morgan';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookie_parser from 'cookie-parser';
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use(cookie_parser());
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../client/build')));
+app.use(morgan('dev'));
 
 // routes
 app.use('/', user_router);

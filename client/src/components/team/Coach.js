@@ -10,17 +10,17 @@ import CoachDialog from './CoachDialog';
 import Tooltip from '@mui/material/Tooltip';
 
 const Coach = (props) => {
-  const { name, photo } = props;
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = useState(-1);
+  const { selectedValue, setSelectedValue } = props;
+  const { name, photo, id } = selectedValue;
+
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = (value) => {
+  const handleClose = () => {
     setOpen(false);
-    setSelectedValue(value);
   };
 
   // default render
@@ -50,9 +50,7 @@ const Coach = (props) => {
   return (
     <>
       <Tooltip
-        title={
-          selectedValue === -1 ? 'Add a coach!' : 'Edit your coach'
-        }
+        title={id === -1 ? 'Add a coach!' : 'Edit your coach'}
         placement="top"
         onClick={handleClickOpen}
       >
@@ -74,18 +72,16 @@ const Coach = (props) => {
       </Tooltip>
       <CoachDialog
         selectedValue={selectedValue}
+        setSelectedValue={setSelectedValue}
         open={open}
         onClose={handleClose}
       />
     </>
   );
 };
-Coach.propTypes = {
-  name: PropTypes.string,
-  photo: PropTypes.string
-};
+
 Coach.defaultProps = {
-  name: '',
-  photo: ''
+  selectedValue: PropTypes.object.isRequired,
+  setSelectedValue: PropTypes.func.isRequired
 };
 export default Coach;

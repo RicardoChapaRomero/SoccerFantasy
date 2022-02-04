@@ -212,7 +212,7 @@ rapidapi_router.get('/api/users_fantasy/', async (req, res) => {
 rapidapi_router.get('/api/players', async (req, res) => {
   for (let i = 1; i <= 1; i++) {
     const response = await fetch(
-      `https://api-football-v1.p.rapidapi.com/v3/players?league=262&season=2021&page=${i}`,
+      `https://api-football-v1.p.rapidapi.com/v3/players?league=262&season=2021&team=2289&page=2`,
       {
         method: 'GET',
         headers: {
@@ -267,32 +267,35 @@ rapidapi_router.get('/api/calculatePoints', async (req, res) => {
 
       response.response.forEach(async (team) => {
         team.players.forEach(async (player) => {
+          points_tmp = 0;
           points_tmp +=
             pointsFormat.minutes *
-              player.statistics[0].games.minutes +
-            pointsFormat.shots * player.statistics[0].shots.on +
+              (player.statistics[0].games.minutes || 0) +
+            pointsFormat.shots *
+              (player.statistics[0].shots.on || 0) +
             pointsFormat.goals.total *
-              player.statistics[0].goals.total +
+              (player.statistics[0].goals.total || 0) +
             pointsFormat.goals.conceded *
-              player.statistics[0].goals.conceded +
+              (player.statistics[0].goals.conceded || 0) +
             pointsFormat.goals.assists *
-              player.statistics[0].goals.assists +
+              (player.statistics[0].goals.assists || 0) +
             pointsFormat.goals.saves *
-              player.statistics[0].goals.saves +
+              (player.statistics[0].goals.saves || 0) +
             pointsFormat.passes *
-              parseInt(player.statistics[0].passes.accuracy) +
+              parseInt(player.statistics[0].passes.accuracy || 0) +
             pointsFormat.tackles.blocks *
-              player.statistics[0].tackles.blocks +
+              (player.statistics[0].tackles.blocks || 0) +
             pointsFormat.tackles.interceptions *
-              player.statistics[0].tackles.interceptions +
+              (player.statistics[0].tackles.interceptions || 0) +
             pointsFormat.dribbles *
-              player.statistics[0].dribbles.success +
+              (player.statistics[0].dribbles.success || 0) +
             pointsFormat.cards.yellow *
-              player.statistics[0].cards.yellow +
-            pointsFormat.cards.red * player.statistics[0].cards.red;
+              (player.statistics[0].cards.yellow || 0) +
+            pointsFormat.cards.red *
+              (player.statistics[0].cards.red || 0);
           Player.findOneAndUpdate(
             { player_id: player.player.id },
-            { points: points_tmp },
+            { points: parseInt(points_tmp) },
             (res) => {
               //console.log('Updated points');
             }
@@ -303,7 +306,7 @@ rapidapi_router.get('/api/calculatePoints', async (req, res) => {
             'player name: ',
             player.player.name,
             ' Points: ',
-            points_tmp,
+            parseInt(points_tmp),
             'player: ',
             tmp
           );

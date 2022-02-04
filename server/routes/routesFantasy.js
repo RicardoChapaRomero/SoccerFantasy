@@ -7,18 +7,22 @@ import {
   Team,
   Venue,
   Standing,
-  Round
+  Round,
+  Fantasies
 } from '../models/model.js';
 
 const routerFantasy = express.Router();
 
 routerFantasy.get('/dt', async (req, res) => {
   Dt.find({})
-    .then((docs) => {
-      res.json(docs);
-    })
-    .catch((err) => {
-      res.json(err);
+    .populate({ path: 'team_object', model: Team })
+    .exec(function (err, dts) {
+      if (err) {
+        console.log(err);
+        res.json(err);
+        return;
+      }
+      res.json(dts);
     });
 });
 
@@ -62,7 +66,7 @@ req.query : {
 }
 */
 
-routerFantasy.get('/player', async (req, res) => {
+routerFantasy.get('/players', async (req, res) => {
   const pageRows = req.query.pageRows;
   const page = req.query.page;
   const position = req.query.position;
@@ -84,4 +88,132 @@ routerFantasy.get('/player', async (req, res) => {
       res.json(players);
     });
 });
+
+/**
+ * {
+ *   players: {
+ *     Goalkeeper: [],
+ *     Defender: [ [Object] ],
+ *     Midfielder: [ [Object] ],
+ *     Attacker: [ [Object] ]
+ *   },
+ *   formation: '4-3-3'
+ * }
+ */
+routerFantasy.post('/saveFantasy/:id', async (req, res) => {
+  const user_id = req.params.id;
+
+  let attackers = [],
+    defenders = [],
+    midfielders = [],
+    bench = [],
+    dt = [];
+  let goalkeeper = '';
+
+  const formation = req.body.formation;
+  const team = req.body.players;
+  team.Attacker.forEach((player) => {
+    attackers.push(player.id);
+  });
+
+  team.Defender.forEach((player) => {
+    defenders.push(player.id);
+  });
+
+  team.Midfielder.forEach((player) => {
+    midfielders.push(player.id);
+  });
+
+  team.Goalkeeper.forEach((player) => {
+    goalkeeper = player.id;
+  });
+
+  // Save Fantasy Points
+  let temp_plyrs = attackers.concat(midfielders, defenders);
+  temp_plyrs.push(goalkeeper);
+
+  const players_data = await Player.find({
+    player_id: {
+      $in: temp_plyrs
+    }
+  });
+
+  let fantasy_points = 0;
+  for (const player of players_data) {
+    fantasy_points += Number.parseInt((player.points) ? player.points : '0');
+  }
+
+  const fantasy = {
+    user_id: user_id,
+    fantasy_points: fantasy_points,
+    lineup: formation,
+    team_lineup: {
+      goalkeeper: goalkeeper,
+      defense: defenders,
+      midfield: midfielders,
+      attack: attackers,
+      bench: bench,
+      dt: (team.Dt.id !== -1) ? team.Dt : dt
+    }
+  };
+
+  if ((await Fantasies.findOne({ user_id: user_id }, { strict: false })) !== null) {
+    await Fantasies.updateOne({ user_id: user_id }, fantasy);
+  } else {
+    const new_fantasy = new Fantasies(fantasy);
+    await new_fantasy.save();
+  }
+
+  res.json({
+    message: { done: true }
+  });
+});
+
+routerFantasy.get('/getFantasy/:id', async (req, res) => {
+  const user_id = req.params.id;
+  const user_fantasy = await Fantasies.findOne({ user_id: user_id });
+
+  let message = {};
+  if (user_fantasy !== null) {
+    message.team = user_fantasy;
+  }
+
+  res.json({ message: message });
+});
+
+routerFantasy.get('/getPlayer', async (req, res) => {
+  const player_ids_str = req.query.players
+  const player_ids = player_ids_str.split(',');
+  //let players = [];
+
+  /*for (const id of player_ids) {
+    const player_DB = await Player.findOne({player_id: id});
+    players.push(await player_DB);
+  }*/
+
+  const players = await Player.find({
+    player_id: {
+      $in: player_ids
+    }
+  });
+
+  let team = {
+    Goalkeeper: [],
+    Defender: [],
+    Midfielder: [],
+    Attacker: []
+  }
+
+  for (const player of players) {
+    team[player.position].push({
+      id: player.player_id,
+      name: player.name,
+      img: player.photo,
+      position: player.position
+    });
+  }
+
+  res.json({ message: { team: team } });
+});
+
 export { routerFantasy };

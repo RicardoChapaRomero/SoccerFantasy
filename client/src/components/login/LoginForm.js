@@ -36,7 +36,7 @@ function LoginForm(props) {
         ...errors,
         ['email']:
           event.target.value !== '' &&
-            validateEmail(event.target.value)
+          validateEmail(event.target.value)
             ? ''
             : 'Invalid email'
       });
@@ -44,14 +44,15 @@ function LoginForm(props) {
   };
 
   const setSessionToken = (token) => {
-    document.cookie = `token=${token}; path=/`;
-  }
+    console.log(token);
+    document.cookie = `token=${token.sessionToken}; path=/`;
+    document.cookie = `name=${token.name}; path=/`;
+  };
 
   const handleLogin = async () => {
-    const response =
-      await formAuth(values.email, values.password);
+    const response = await formAuth(values.email, values.password);
     if (response.userIsRegistered) {
-      setSessionToken(response.sessionToken);
+      setSessionToken(response);
       onAuthChange(true);
     } else {
       onChange();
@@ -61,7 +62,7 @@ function LoginForm(props) {
   const handleGoogleOnSuccess = async (google_response) => {
     const response = await googleAuthOnSuccess(google_response);
     if (response.userIsRegistered) {
-      setSessionToken(response.sessionToken);
+      setSessionToken(response);
       onAuthChange(true);
     } else {
       onChange();

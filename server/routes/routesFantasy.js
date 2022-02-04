@@ -130,4 +130,32 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
     message: { done: true }
   });
 });
+
+routerFantasy.get('/getFantasy/:id', async (req, res) => {
+  const user_id = req.params.id;
+  const user_fantasy = await Fantasies.findOne({ user_id: user_id });
+
+  let message = {};
+  if (user_fantasy !== null) {
+    message.team = user_fantasy;
+  }
+
+  res.json({ message: message });
+});
+
+routerFantasy.get('/getPlayer', async (req, res) => {
+  const player_ids_str = req.query.players
+  const player_ids = player_ids_str.split(',');
+  const players = await Player.find({
+    player_id: {
+      $in: player_ids
+    }
+  });
+
+  console.log(players.length);
+
+  console.log(player_ids);
+  res.json({ message: { players: players } });
+});
+
 export { routerFantasy };

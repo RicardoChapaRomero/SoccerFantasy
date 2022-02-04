@@ -61,12 +61,10 @@ const Field = (props) => {
 
   const saveTeam = async () => {
     const token_res = await verifyUserToken(document.cookie);
-    console.log(token_res);
     const fantasy_saved_res = await(saveFantasy(token_res.userId, {
       players: selected_players,
       formation: formation
     }));
-    console.log('done');
   };
 
   return (

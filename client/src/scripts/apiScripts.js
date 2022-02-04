@@ -30,7 +30,7 @@ const doFetch = async (url, method = 'GET', params = {}) => {
  *    userIsRegistered: true/false
  *  }
  * }
- * */ 
+ * */
 export async function googleAuthOnSuccess(response) {
   const userProfile = response.profileObj;
   const userData = {
@@ -56,7 +56,7 @@ export function googleAuthOnFailure(response) {
  *    userIsRegistered: true/false
  *  }
  * }
- * */ 
+ * */
 export async function formAuth(email, password) {
   const userData = {
     method: 'form',
@@ -98,8 +98,8 @@ export async function formRegister(email, password, teamName, name) {
  *    userId: id
  *  }
  * }
- * */ 
- export async function verifyUserToken(token) {
+ * */
+export async function verifyUserToken(token) {
   return await doFetch('/verifyToken', 'GET', { token: token });
 }
 
@@ -111,11 +111,39 @@ export async function formRegister(email, password, teamName, name) {
  *    userIsRegistered: true/false
  *  }
  * }
- * */ 
+ * */
 export async function verifyUser(id) {
   return await doFetch('/verifyUser', 'GET', { userId: id });
 }
 
+export async function getFantasy(id) {
+  return await doFetch(`/fantasy/getFantasy/${id}`, 'GET', {});
+}
+
+/**
+ * {
+ *   team: {
+ *     _id: new ObjectId("61fcb06452befb154342728b"),
+ *     user_id: '61fb2081766859b8e9ddb024',
+ *     lineup: '4-3-3',
+ *     budget: 5000000,
+ *     team_lineup: {
+ *       goalkeeper: '',
+ *       defense: [Array],
+ *       midfield: [Array],
+ *       attack: [Array],
+ *       bench: [],
+ *       dt: []
+ *     },
+ *     __v: 0
+ *   }
+ * }
+ * 
+*/
 export async function saveFantasy(id, team) {
   return await doFetch(`/fantasy/saveFantasy/${id}`, 'POST', team);
+}
+
+export async function getPlayers(players) {
+  return await doFetch('/fantasy/getPlayer', 'GET', { players: players });
 }

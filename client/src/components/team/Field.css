@@ -35,7 +35,10 @@
   display: flex;
   justify-content: space-evenly;
 }
-
+.footerField {
+  display: flex;
+  justify-content: center;
+}
 @media (max-width: 900px) {
   .field {
     width: 95vw;

@@ -29,7 +29,8 @@ const player_schema = schema({
   team_id: String,
   team_object: { type: Schema.Types.ObjectId, ref: 'Teams' },
   goals: Number,
-  points: Number
+  points: Number,
+  cost: Number
 });
 
 const standings_schema = schema({

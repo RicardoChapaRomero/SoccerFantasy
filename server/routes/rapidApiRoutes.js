@@ -366,4 +366,21 @@ rapidapi_router.get('/api/coach', async (req, res) => {
   res.json('success');
 });
 
+rapidapi_router.get('/api/playerCosts', async (req, res) => {
+  const players = await Player.find();
+  players.forEach(async (player) => {
+    let cost_tmp =
+      (((player.rating || 6.3) - 6.3) * (5000000 - 1000000)) /
+        (7.1 - 6.3) +
+      1000000;
+    if (cost_tmp < 1000000) cost_tmp = 1000000;
+    else if (cost_tmp > 5000000) cost_tmp = 5000000;
+    await Player.updateOne(
+      { player_id: player.player_id },
+      { $set: { cost: parseInt(cost_tmp) } }
+    );
+  });
+  res.json('success');
+});
+
 export { rapidapi_router };

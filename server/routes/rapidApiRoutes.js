@@ -269,26 +269,26 @@ rapidapi_router.get('/api/calculatePoints', async (req, res) => {
         team.players.forEach(async (player) => {
           points_tmp +=
             pointsFormat.minutes *
-            player.statistics[0].games.minutes +
+              player.statistics[0].games.minutes +
             pointsFormat.shots * player.statistics[0].shots.on +
             pointsFormat.goals.total *
-            player.statistics[0].goals.total +
+              player.statistics[0].goals.total +
             pointsFormat.goals.conceded *
-            player.statistics[0].goals.conceded +
+              player.statistics[0].goals.conceded +
             pointsFormat.goals.assists *
-            player.statistics[0].goals.assists +
+              player.statistics[0].goals.assists +
             pointsFormat.goals.saves *
-            player.statistics[0].goals.saves +
+              player.statistics[0].goals.saves +
             pointsFormat.passes *
-            parseInt(player.statistics[0].passes.accuracy) +
+              parseInt(player.statistics[0].passes.accuracy) +
             pointsFormat.tackles.blocks *
-            player.statistics[0].tackles.blocks +
+              player.statistics[0].tackles.blocks +
             pointsFormat.tackles.interceptions *
-            player.statistics[0].tackles.interceptions +
+              player.statistics[0].tackles.interceptions +
             pointsFormat.dribbles *
-            player.statistics[0].dribbles.success +
+              player.statistics[0].dribbles.success +
             pointsFormat.cards.yellow *
-            player.statistics[0].cards.yellow +
+              player.statistics[0].cards.yellow +
             pointsFormat.cards.red * player.statistics[0].cards.red;
           Player.findOneAndUpdate(
             { player_id: player.player.id },
@@ -313,6 +313,52 @@ rapidapi_router.get('/api/calculatePoints', async (req, res) => {
       });
       console.log('players: ', tmp);
     });
+  });
+  res.json('success');
+});
+
+rapidapi_router.get('/api/coach', async (req, res) => {
+  const response_back = await fetch(
+    'https://api-football-v1.p.rapidapi.com/v3/teams?league=262&season=2021',
+    {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY
+      }
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    });
+  response_back.response.forEach(async (team) => {
+    const team_id = team.team.id;
+
+    const response = await fetch(
+      `https://api-football-v1.p.rapidapi.com/v3/coachs?team=${team_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY
+        }
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.response)) return data.response[0];
+        else return data.response;
+      });
+    const dt_tmp = new Dt({
+      dt_id: response.id,
+      name: response.name,
+      age: response.age,
+      nationality: response.nationality,
+      photo: response.photo,
+      team_id: response.team.id
+    });
+    dt_tmp.save();
   });
   res.json('success');
 });

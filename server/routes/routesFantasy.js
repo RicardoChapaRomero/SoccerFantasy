@@ -37,6 +37,22 @@ routerFantasy.get('/standing', async (req, res) => {
     });
 });
 
+routerFantasy.get('/round', async (req, res) => {
+  Round.find({}, { strict: false })
+    .populate({ path: 'home_team_object', model: Team })
+    .populate({ path: 'away_team_object', model: Team })
+    .sort({ round_name: 1 })
+    .exec(function (err, round) {
+      if (err) {
+        console.log(err);
+        res.json(err);
+        return;
+      }
+      console.log(round);
+      res.json(round);
+    });
+});
+
 /* 
 req.query : {
   pageRows : number,

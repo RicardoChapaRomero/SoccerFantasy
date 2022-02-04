@@ -223,7 +223,9 @@ function MTable(props) {
                 className={classes.avatar}
               />
             </TableCell>
-            <TableCell>{defaultPrice}</TableCell>
+            <TableCell>
+              {row.cost ? row.cost : defaultPrice}
+            </TableCell>
             <TableCell>
               {row.points ? row.points : defaultPoint}
             </TableCell>

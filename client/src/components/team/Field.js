@@ -8,9 +8,13 @@ import {
   verifyUserToken,
   saveFantasy
 } from '../../scripts/apiScripts';
+import SaveTeamDialog from './SaveTeamDialog';
 
 const Field = (props) => {
   const { formation, selected_players, setSelectedDT } = props;
+  const [open, setOpen] = React.useState(false);
+  const [success, setSuccess] = React.useState(true);
+
   const attackers = [],
     midfielders = [],
     defenders = [];
@@ -68,7 +72,18 @@ const Field = (props) => {
       players: selected_players,
       formation: formation
     });
+    // give here result
+    setSuccess(true);
+    setOpen(true);
   };
+
+  const Dialog = (
+    <SaveTeamDialog
+      open={open}
+      success={success}
+      onClose={() => setOpen(false)}
+    />
+  );
 
   return (
     <div>
@@ -95,6 +110,7 @@ const Field = (props) => {
       </div>
       <div className="footerField">
         <Button
+          color="success"
           sx={{
             display: 'flex',
             alignSelf: 'center',
@@ -106,9 +122,11 @@ const Field = (props) => {
           save team
         </Button>
       </div>
+      {Dialog}
     </div>
   );
 };
+
 Field.propTypes = {
   formation: PropTypes.string,
   selected_players: PropTypes.object,

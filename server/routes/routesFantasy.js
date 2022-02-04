@@ -112,8 +112,24 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
     goalkeeper = player.id;
   });
 
+  // Save Fantasy Points
+  let temp_plyrs = attackers.concat(midfielders, defenders);
+  temp_plyrs.push(goalkeeper);
+
+  const players_data = await Player.find({
+    player_id: {
+      $in: temp_plyrs
+    }
+  });
+
+  let fantasy_points = 0;
+  for (const player of players_data) {
+    fantasy_points += Number.parseInt((player.points) ? player.points : '0');
+  }
+
   const fantasy = {
     user_id: user_id,
+    fantasy_points: fantasy_points,
     lineup: formation,
     team_lineup: {
       goalkeeper: goalkeeper,
@@ -121,11 +137,11 @@ routerFantasy.post('/saveFantasy/:id', async (req, res) => {
       midfield: midfielders,
       attack: attackers,
       bench: bench,
-      dt: dt
+      dt: (team.Dt.id !== -1) ? team.Dt : dt
     }
   };
 
-  if ((await Fantasies.findOne({ user_id: user_id })) !== null) {
+  if ((await Fantasies.findOne({ user_id: user_id }, { strict: false })) !== null) {
     await Fantasies.updateOne({ user_id: user_id }, fantasy);
   } else {
     const new_fantasy = new Fantasies(fantasy);
@@ -152,16 +168,36 @@ routerFantasy.get('/getFantasy/:id', async (req, res) => {
 routerFantasy.get('/getPlayer', async (req, res) => {
   const player_ids_str = req.query.players
   const player_ids = player_ids_str.split(',');
+  //let players = [];
+
+  /*for (const id of player_ids) {
+    const player_DB = await Player.findOne({player_id: id});
+    players.push(await player_DB);
+  }*/
+
   const players = await Player.find({
     player_id: {
       $in: player_ids
     }
   });
 
-  console.log(players.length);
+  let team = {
+    Goalkeeper: [],
+    Defender: [],
+    Midfielder: [],
+    Attacker: []
+  }
 
-  console.log(player_ids);
-  res.json({ message: { players: players } });
+  for (const player of players) {
+    team[player.position].push({
+      id: player.player_id,
+      name: player.name,
+      img: player.photo,
+      position: player.position
+    });
+  }
+
+  res.json({ message: { team: team } });
 });
 
 export { routerFantasy };

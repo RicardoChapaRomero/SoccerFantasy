@@ -31,7 +31,7 @@ user_router.get('/login', async (req, res) => {
   // registered
   let user_is_registered = false;
   const user_DB = await User.findOne({ email: query.email });
-  console.log(user_DB);
+  
   if (user_DB !== null) {
     if (query.method === 'form') {
       user_is_registered =

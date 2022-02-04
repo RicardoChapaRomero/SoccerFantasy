@@ -23,6 +23,7 @@ const Team = () => {
     const stateCopy = selected_players;
     setSelectedPlayers({ ...stateCopy, Dt: coach });
   };
+
   useEffect(() => {
     async function getUserFantasy() {
       const token_res = await verifyUserToken(document.cookie);
@@ -37,13 +38,16 @@ const Team = () => {
       if (lineup.goalkeeper.length) players.push(lineup.goalkeeper);
 
       const players_res = await getPlayers(players);
-      console.log(players_res);
-
+      players_res.team.Dt = (fantasy_team.team.team_lineup.dt.id !== -1) ? 
+        fantasy_team.team.team_lineup.dt :
+        { id: -1, name: '', photo: '' };
+        
       setFormation(fantasy_team.team.lineup);
+      setSelectedPlayers(players_res.team);
     }
 
     getUserFantasy();
-  });
+  }, []);
 
   return (
     <Stack

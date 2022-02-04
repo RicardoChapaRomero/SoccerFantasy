@@ -166,7 +166,7 @@ function MTable(props) {
               />
             </TableCell>
             <TableCell>{defaultPrice}</TableCell>
-            <TableCell>{defaultPoint}</TableCell>
+            <TableCell>{(row.points) ? row.points : defaultPoint}</TableCell>
             <TableCell>
               <Button
                 variant='contained'

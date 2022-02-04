@@ -68,6 +68,10 @@ const user_schema = schema({
 
 const user_fantasy = schema({
   user_id: String,
+  fantasy_points: {
+    type: Number,
+    default: 0
+  },
   lineup: {
     type: String,
     default: '4-3-3'
